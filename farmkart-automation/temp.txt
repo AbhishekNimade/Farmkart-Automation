@@ -1,0 +1,113 @@
+import { chromium } from "playwright";
+import readline from "readline";
+import { getOrders, markAsOFD } from "./sheets/googleSheets.js";
+
+// ================= UTIL =================
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const ask = (q) => new Promise(r => rl.question(q, r));
+
+// ================= MAIN =================
+(async () => {
+    const startRow = Number(await ask("👉 Kaunse ROW se start karna hai? (eg: 4596): "));
+    rl.close();
+
+    console.log("🚀 Automation start from row:", startRow);
+
+    const orders = await getOrders();
+
+    // Sirf 5 rows
+    const toProcess = orders
+        .filter(o => o.sheetRow >= startRow)
+        .slice(0, 5);
+
+    if (toProcess.length === 0) {
+        console.log("⚠️ No valid orders found");
+        return;
+    }
+
+    // ===== Browser (NORMAL Chrome, NOT incognito)
+    const browser = await chromium.launch({
+        headless: false,
+        channel: "chrome",
+        args: [
+            "--start-maximized",
+            "--disable-blink-features=AutomationControlled",
+        ],
+    });
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    // ===== LOGIN =====
+    await page.goto("https://kart.farm:8443/Farmkart/index.jsp?status=logout");
+    await page.fill('input[type="text"]', "8754568014");
+    await page.fill('input[type="password"]', "Yash98");
+    await page.click('button:has-text("Login")');
+
+    await page.waitForURL("**/dashboard.jsp");
+    console.log("✅ Login successful");
+
+    // ===== PROCESS ORDERS =====
+    for (const order of toProcess) {
+        console.log("➡ Processing Order:", order.orderId);
+
+        await page.goto(
+            `https://kart.farm:8443/Farmkart/orderdetails.jsp?orderid=${order.orderId}`
+        );
+
+        await sleep(1000);
+
+        // Out for delivery button
+        await page.click('button:has-text("Out for delivery")');
+        await sleep(1000);
+
+        // Partner select
+        await page.selectOption(
+            'select',
+            { label: order.partner }
+        );
+
+        await sleep(1000);
+
+        // Tracking number
+        await page.fill(
+            'input[placeholder="Enter Tracking Number"]',
+            order.awb
+        );
+
+        await sleep(1000);
+
+        // URL
+        const url =
+            order.partner === "Delhivery"
+                ? "https://www.delhivery.com/tracking"
+                : "https://www.indiapost.gov.in/";
+
+        await page.fill(
+            'input[placeholder="Enter URL"]',
+            url
+        );
+
+        await sleep(1000);
+
+        // Submit
+        await page.click('button:has-text("Submit")');
+        await sleep(1000);
+
+        // Sheet update
+        await markAsOFD(order.sheetRow);
+        console.log("✅ OFD DONE:", order.orderId);
+    }
+
+    console.log("🎉 Automation completed (5 rows max)");
+})();
+
+
+
+

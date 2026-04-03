@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmkart Automation Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="icon" href="R logo-01.png" type="image/png">
+    <link rel="shortcut icon" href="R logo-01.png" type="image/png">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- LIQUID GLASS NAVBAR (Compact Split) -->
+        <nav class="liquid-navbar">
+            <div class="nav-content">
+                <div class="logo-area">
+                    <img src="logo.png" alt="Farmkart" class="nav-logo">
+                </div>
+
+                <div class="nav-right-section">
+                    <div class="nav-items-container">
+                        <div class="bubble-indicator"></div>
+                        <a href="#" class="nav-item active" onclick="showView('home', this)">Home</a>
+                        <a href="#dashboard" class="nav-item" onclick="showView('dashboard', this)">Dashboard</a>
+                        <a href="#features" class="nav-item"
+                            onclick="scrollToSection('features-section', this); return false;">Features</a>
+                        <!-- NEW -->
+                        <a href="#guide" class="nav-item" onclick="showView('guide', this); return false;">Guide</a>
+                        <!-- NEW -->
+                        <a href="#about" class="nav-item"
+                            onclick="scrollToSection('about', this); return false;">About</a>
+                        <a href="#settings" class="nav-item"
+                            onclick="showView('settings', this); return false;">Settings</a>
+                    </div>
+
+                    <a href="https://farmkart.com" target="_blank" class="external-link-btn">
+                        <span>Official Site</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-wrapper">
+
+            <!-- SELECTION VIEW -->
+            <div id="selection-view" class="view-section active">
+                <!-- HERO SECTION -->
+                <div id="hero-section" class="hero-section">
+                    <h1>Welcome to <span class="highlight">Farmkart Automation</span></h1>
+                    <p class="tagline">Empowering Agriculture with Intelligent Technology</p>
+                    <div class="divider"></div>
+                </div>
+
+                <!-- LIVE STATS DASHBOARD -->
+                <div class="stats-dashboard">
+                    <!-- Customers -->
+                    <div class="stat-card">
+                        <div class="stat-icon customer-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>Total Number of Customer</h3>
+                        <p class="stat-value" id="stat-customers"> Loading... </p>
+                    </div>
+                    <!-- Products -->
+                    <div class="stat-card">
+                        <div class="stat-icon product-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <h3>Total Number of Products</h3>
+                        <p class="stat-value" id="stat-products"> Loading... </p>
+                    </div>
+                    <!-- Pending -->
+                    <div class="stat-card">
+                        <div class="stat-icon pending-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>Orders Pending</h3>
+                        <p class="stat-value" id="stat-pending"> Loading... </p>
+                    </div>
+                    <!-- Completed -->
+                    <div class="stat-card">
+                        <div class="stat-icon completed-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>Orders Completed</h3>
+                        <p class="stat-value" id="stat-completed"> Loading... </p>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="https://kart.farm:8443/Farmkart/dashboard.jsp" target="_blank" class="hero-cta">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="cta-icon">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Access Farmkart CMS Portal</span>
+                    </a>
+                </div>
+
+                <div class="impact-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="impact-orders">0</span>
+                        <span class="stat-label">Orders Processed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="impact-hours">0</span>
+                        <span class="stat-label">Hours Saved</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="impact-accuracy">0</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                </div>
+
+                <!-- FEATURES SECTION (New) -->
+                <div id="features-section" class="features-section">
+                    <div class="section-header">
+                        <h2>Automation <span class="highlight">Modules</span></h2>
+                        <p>Launch your specialized automation flows</p>
+                    </div>
+                    <div class="cards-container">
+                        <div class="card" onclick="selectModule('invoice')">
+                            <div class="card-icon">
+                                <!-- SVG Icon: File Text / Invoice -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <h2>Invoice Generation</h2>
+                            <p>Automated invoice creation for verified pending orders.</p>
+                            <div class="card-cta" onclick="selectModule('invoice')">
+                                <span>Start Automation</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="card" onclick="selectModule('booking')">
+                            <div class="card-icon">
+                                <!-- SVG Icon: Box/Package -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                    </path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <h2>Order Booking</h2>
+                            <p>Automated order processing and booking via Delhivery.</p>
+                            <div class="card-cta">
+                                <span>Start Automation</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="card" onclick="selectModule('ofd')">
+                            <div class="card-icon">
+                                <!-- SVG Icon: Truck -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <h2>Out For Delivery</h2>
+                            <p>Automate OFD status updates and daily reporting.</p>
+                            <div class="card-cta">
+                                <span>Start Automation</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="card cancel-card" onclick="selectModule('cancel')">
+                            <div class="card-icon">
+                                <!-- SVG Icon: X Circle / Cancel -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                                </svg>
+                            </div>
+                            <h2>Order Cancellation</h2>
+                            <p>Automate order cancellation from Google Sheet with CMS sync.</p>
+                            <div class="card-cta">
+                                <span>Start Automation</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TECH STACK SECTION (New) -->
+
+
+                <div class="tech-stack-section">
+                    <div class="section-header">
+                        <h2>Under the <span class="highlight">Hood</span></h2>
+                        <p>Powered by robust engineering</p>
+                    </div>
+                    <div class="tech-grid">
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Node.js Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                    <polyline points="2 17 12 22 22 17"></polyline>
+                                    <polyline points="2 12 12 17 22 12"></polyline>
+                                </svg>
+                            </div>
+                            <h3>Node.js</h3>
+                            <p>Non-blocking I/O model for high-performance automation scripts.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Socket.IO Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path
+                                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3>Socket.IO</h3>
+                            <p>Real-time bidirectional event-based communication.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Playwright Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                            <h3>Playwright</h3>
+                            <p>Reliable end-to-end testing and browser automation.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Google Sheets Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <line x1="10" y1="9" x2="8" y2="9"></line>
+                                </svg>
+                            </div>
+                            <h3>Google Sheets API</h3>
+                            <p>Seamless data synchronization with cloud spreadsheets.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WORKFLOW SECTION -->
+                <div id="workflow-section" class="workflow-section">
+                    <div class="section-header">
+                        <h2>How it <span class="highlight">Works</span></h2>
+                        <p>Streamlined 6-step automation process</p>
+                    </div>
+
+                    <div class="process-timeline">
+                        <!-- Step 1 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">01</div>
+                                <h3>Secure Login</h3>
+                                <p>Authentication with the CMS portal to start the session safely.</p>
+                                <span class="timeline-badge">Step 1</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">02</div>
+                                <h3>Data Sync</h3>
+                                <p>Pending orders are fetched from the Google Sheet in real-time.</p>
+                                <span class="timeline-badge">Step 2</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="5" r="3"></circle>
+                                    <line x1="12" y1="22" x2="12" y2="8"></line>
+                                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">03</div>
+                                <h3>Smart Validation</h3>
+                                <p>System verifies city, state, and pin code accuracy for shipping.</p>
+                                <span class="timeline-badge">Step 3</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="2" y="6" width="20" height="8" rx="1"></rect>
+                                    <path d="M17 14v7"></path>
+                                    <path d="M7 14v7"></path>
+                                    <path d="M17 3v3"></path>
+                                    <path d="M7 3v3"></path>
+                                    <path d="M10 14 2.3 6.3"></path>
+                                    <path d="M14 6l7.7 7.7"></path>
+                                    <path d="M8 6l8 8"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">04</div>
+                                <h3>Auto-Booking</h3>
+                                <p>Automated interaction with Delhivery for order processing.</p>
+                                <span class="timeline-badge">Step 4</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 22h14"></path>
+                                    <path d="M5 2h14"></path>
+                                    <path
+                                        d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22">
+                                    </path>
+                                    <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">05</div>
+                                <h3>Real-time Sync</h3>
+                                <p>AWB numbers and status are instantly updated to the sheet.</p>
+                                <span class="timeline-badge">Step 5</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">06</div>
+                                <h3>Final Report</h3>
+                                <p>Process completion summary and statistics are finalized.</p>
+                                <span class="timeline-badge">Step 6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- SAFETY PROTOCOLS SECTION (New) -->
+                <div class="safety-section">
+                    <div class="section-header">
+                        <h2>Safety <span class="highlight">First</span></h2>
+                        <p>Built-in validation to prevent errors</p>
+                    </div>
+                    <div class="safety-content">
+                        <div class="safety-text">
+                            <h3>Smart Verification Logic</h3>
+                            <p>The system doesn't just click buttons; it thinks. Before confirming any booking, the
+                                automation verifies:</p>
+                            <ul>
+                                <li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="color: #72bf44; vertical-align: middle; margin-right: 8px;">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    <strong>Address Match:</strong> Checks customer city and state against pin codes.
+                                </li>
+                                <li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="color: #72bf44; vertical-align: middle; margin-right: 8px;">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    <strong>Weight Check:</strong> compares volumetric weight against box dimensions.
+                                </li>
+                                <li>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        style="color: #72bf44; vertical-align: middle; margin-right: 8px;">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    <strong>AWB Validation:</strong> Ensures generated AWB numbers are valid before
+                                    saving.
+                                </li>
+                            </ul>
+                            <p>This "double-check" architecture ensures 99.9% booking accuracy.</p>
+                        </div>
+                        <div class="safety-visual">
+                            <div class="shield-visual">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24"
+                                    fill="none" stroke="#72bf44" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                                <div class="check-overlay">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ SECTION (New) -->
+                <div class="faq-section">
+                    <div class="section-header">
+                        <h2>Common <span class="highlight">Questions</span></h2>
+                    </div>
+                    <div class="faq-container">
+                        <details class="faq-item">
+                            <summary>How do I start the booking process?</summary>
+                            <p>Click on the "Order Booking" card, enter the row number where pending orders start in
+                                your Google Sheet, and click "Start Automation".</p>
+                        </details>
+                        <details class="faq-item">
+                            <summary>What if an order fails?</summary>
+                            <p>The system will log the specific error in the terminal view and on the Google Sheet
+                                status column. You can manually inspect or skip it.</p>
+                        </details>
+                        <details class="faq-item">
+                            <summary>Does it work in the background?</summary>
+                            <p>Yes, the automation runs on the server. However, keep the terminal view open to monitor
+                                progress logs.</p>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- COMPANY DETAILS SECTION -->
+                <div class="about-container">
+                    <h3>About Farmkart</h3>
+                    <div class="about-grid">
+                        <div class="about-info">
+                            <h4>Agriculture Superstore</h4>
+                            <p>Farmkart is a premier agriculture superstore and corporate office dedicated to providing
+                                top-quality agriculture products and farmer-related services.</p>
+                            <p class="rating">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="#16a34a" stroke="none">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg>
+                                Customer Rating: <strong>4.7 ★</strong> (170+ reviews)
+                            </p>
+                        </div>
+                        <div class="contact-info">
+                            <p class="icon-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="info-icon">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <strong>Address:</strong> Anjad Road, Barwani, Madhya Pradesh 451551, India
+                            </p>
+                            <p class="icon-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="info-icon">
+                                    <path
+                                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                                    </path>
+                                </svg>
+                                <strong>Phone:</strong> +91 88238 88238
+                            </p>
+                            <p class="icon-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="info-icon">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path
+                                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                    </path>
+                                </svg>
+                                <strong>Website:</strong> <a href="http://farmkart.com/"
+                                    target="_blank">farmkart.com</a>
+                            </p>
+                            <p class="icon-text">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="info-icon">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <strong>Status:</strong> Open and Operational
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- QUICK GUIDE SECTION (Home) -->
+            </div>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboard-view" class="view-section hidden">
+                <div class="hero-section">
+                    <h1>Dashboard <span class="highlight">Overview</span></h1>
+                    <p class="tagline">Real-time Monitoring & Quick Actions</p>
+                    <div class="divider"></div>
+                </div>
+
+                <!-- LIVE STATS DASHBOARD -->
+                <div class="stats-dashboard">
+                    <!-- Customers -->
+                    <div class="stat-card">
+                        <div class="stat-icon customer-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>Total Number of Customer</h3>
+                        <p class="stat-value" id="dash-stat-customers">Loading...</p>
+                    </div>
+                    <!-- Products -->
+                    <div class="stat-card">
+                        <div class="stat-icon product-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <h3>Total Number of Products</h3>
+                        <p class="stat-value" id="dash-stat-products">Loading...</p>
+                    </div>
+                    <!-- Pending -->
+                    <div class="stat-card">
+                        <div class="stat-icon pending-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <h3>Orders Pending</h3>
+                        <p class="stat-value" id="dash-stat-pending">Loading...</p>
+                    </div>
+                    <!-- Completed -->
+                    <div class="stat-card">
+                        <div class="stat-icon completed-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3>Orders Completed</h3>
+                        <p class="stat-value" id="dash-stat-completed">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="hero-actions dashboard-actions">
+                    <a href="https://kart.farm:8443/Farmkart/dashboard.jsp" target="_blank" class="hero-cta">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="cta-icon">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Access Farmkart CMS Portal</span>
+                    </a>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="cards-container">
+                    <div class="card" onclick="selectModule('invoice')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <h2>Invoice Generation</h2>
+                        <p>Automated invoice creation for verified pending orders.</p>
+                    </div>
+                    <div class="card" onclick="selectModule('booking')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                </path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                        </div>
+                        <h2>Order Booking</h2>
+                        <p>Automated order processing and booking via Delhivery.</p>
+                    </div>
+                    <div class="card" onclick="selectModule('ofd')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <h2>Out For Delivery</h2>
+                        <p>Automate OFD status updates and daily reporting.</p>
+                    </div>
+                    <div class="card cancel-card" onclick="selectModule('cancel')">
+                        <div class="card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h2>Order Cancellation</h2>
+                        <p>Automate order cancellation from Google Sheet with CMS sync.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GUIDE VIEW -->
+            <div id="guide-view" class="view-section hidden">
+                <div class="hero-section">
+                    <h1>Automation <span class="highlight">Guide</span></h1>
+                    <p class="tagline">Comprehensive documentation for seamless operations</p>
+                    <div class="divider"></div>
+                </div>
+
+                <!-- DUPLICATED TECH STACK -->
+                <div class="tech-stack-section">
+                    <div class="section-header">
+                        <h2>Under the <span class="highlight">Hood</span></h2>
+                        <p>Powered by robust engineering</p>
+                    </div>
+                    <div class="tech-grid">
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Node.js Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                    <polyline points="2 17 12 22 22 17"></polyline>
+                                    <polyline points="2 12 12 17 22 12"></polyline>
+                                </svg>
+                            </div>
+                            <h3>Node.js</h3>
+                            <p>Non-blocking I/O model for high-performance automation scripts.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Socket.IO Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path
+                                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3>Socket.IO</h3>
+                            <p>Real-time bidirectional event-based communication.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Playwright Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                            <h3>Playwright</h3>
+                            <p>Reliable end-to-end testing and browser automation.</p>
+                        </div>
+                        <div class="tech-card">
+                            <div class="tech-icon">
+                                <!-- Google Sheets Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <line x1="10" y1="9" x2="8" y2="9"></line>
+                                </svg>
+                            </div>
+                            <h3>Google Sheets API</h3>
+                            <p>Seamless data synchronization with cloud spreadsheets.</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="workflow-section">
+                    <div class="section-header">
+                        <h2>Step-by-Step <span class="highlight">Workflow</span></h2>
+                    </div>
+
+                    <div class="process-timeline">
+                        <!-- Step 1 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">01</div>
+                                <h3>Secure Login</h3>
+                                <p>Authentication with the CMS portal to start the session safely.</p>
+                                <span class="timeline-badge">Step 1</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">02</div>
+                                <h3>Data Sync</h3>
+                                <p>Pending orders are fetched from the Google Sheet in real-time.</p>
+                                <span class="timeline-badge">Step 2</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="5" r="3"></circle>
+                                    <line x1="12" y1="22" x2="12" y2="8"></line>
+                                    <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">03</div>
+                                <h3>Smart Validation</h3>
+                                <p>System verifies city, state, and pin code accuracy for shipping.</p>
+                                <span class="timeline-badge">Step 3</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="2" y="6" width="20" height="8" rx="1"></rect>
+                                    <path d="M17 14v7"></path>
+                                    <path d="M7 14v7"></path>
+                                    <path d="M17 3v3"></path>
+                                    <path d="M7 3v3"></path>
+                                    <path d="M10 14 2.3 6.3"></path>
+                                    <path d="M14 6l7.7 7.7"></path>
+                                    <path d="M8 6l8 8"></path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">04</div>
+                                <h3>Auto-Booking</h3>
+                                <p>Automated interaction with Delhivery for order processing.</p>
+                                <span class="timeline-badge">Step 4</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 22h14"></path>
+                                    <path d="M5 2h14"></path>
+                                    <path
+                                        d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22">
+                                    </path>
+                                    <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">05</div>
+                                <h3>Real-time Sync</h3>
+                                <p>AWB numbers and status are instantly updated to the sheet.</p>
+                                <span class="timeline-badge">Step 5</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 6 -->
+                        <div class="timeline-step">
+                            <div class="timeline-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="timeline-card">
+                                <div class="step-watermark">06</div>
+                                <h3>Final Report</h3>
+                                <p>Process completion summary and statistics are finalized.</p>
+                                <span class="timeline-badge">Step 6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-section">
+                    <div class="section-header">
+                        <h2>Best <span class="highlight">Practices</span></h2>
+                    </div>
+                    <div class="safety-content">
+                        <div class="safety-text">
+                            <h3>Optimization Tips</h3>
+                            <ul>
+                                <li><strong>Check Connectivity:</strong> Ensure a stable internet connection for
+                                    long-running scripts.</li>
+                                <li><strong>Verify Sheet Names:</strong> Don't rename Google Sheet tabs while the
+                                    process is active.</li>
+                                <li><strong>Monitor Logs:</strong> Keep the terminal view open to catch any specific
+                                    address validation failures.</li>
+                                <li><strong>Start Small:</strong> For first-time users, try running 5-10 rows to verify
+                                    the configuration.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="settings-view" class="view-section hidden">
+                <div class="hero-section">
+                    <h1>Settings <span class="highlight">& Configuration</span></h1>
+                    <p class="tagline">Manage Your Automation Preferences</p>
+                    <div class="divider"></div>
+                </div>
+
+                <div class="settings-grid">
+                    <!-- General Settings -->
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <div class="setting-icon general-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path
+                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3>General</h3>
+                        </div>
+                        <div class="setting-item">
+                            <label>Dark Mode</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>Sound Effects</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Automation Config -->
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <div class="setting-icon auto-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                </svg>
+                            </div>
+                            <h3>Automation</h3>
+                        </div>
+                        <div class="setting-item">
+                            <label>Action Delay (ms)</label>
+                            <input type="range" min="500" max="3000" value="1000" class="range-slider">
+                        </div>
+                        <div class="setting-item">
+                            <label>Max Retries</label>
+                            <select class="setting-select">
+                                <option>1 Attempt</option>
+                                <option selected>3 Attempts</option>
+                                <option>5 Attempts</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Data & Logs -->
+                    <div class="setting-card">
+                        <div class="setting-header">
+                            <div class="setting-icon data-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                            <h3>Data Management</h3>
+                        </div>
+                        <div class="setting-actions">
+                            <button class="action-btn"
+                                onclick="document.getElementById('terminal-output').innerHTML = '';">
+                                Clear Terminal Logs
+                            </button>
+                            <button class="action-btn secondary">
+                                Export Session Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Info Footer inside Settings -->
+                <div class="system-info-card">
+                    <p>System Version: <strong>v2.4.0</strong> (Stable)</p>
+                    <p>Node Environment: <strong>Production</strong></p>
+                </div>
+            </div>
+
+            <!-- CONFIGURATION VIEW -->
+            <div id="config-view" class="view-section hidden">
+                <button class="back-btn" onclick="goBack()">← Back to Selection</button>
+                <h2 id="module-title">Configure Automation</h2>
+                <p id="module-subtitle" class="module-subtitle"></p>
+
+                <!-- Cancel Module Warning Banner -->
+                <div id="cancel-warning-banner" class="cancel-warning-banner" style="display:none;">
+                    <div class="warning-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="warning-content">
+                        <strong>Caution:</strong> This will permanently cancel the orders listed in the Google Sheet. This action cannot be undone.
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <div class="input-group">
+                        <label id="startRow-label">Start Row Number</label>
+                        <input type="number" id="startRow" placeholder="e.g. 5000" min="1">
+                    </div>
+
+                    <!-- Additional inputs can be toggled here based on selection -->
+                    <div class="input-group" id="limit-group">
+                        <label>Max Orders (Optional, 0 = Unlimited)</label>
+                        <input type="number" id="limit" placeholder="0" min="0" value="0">
+                    </div>
+
+                    <button id="start-btn" onclick="startAutomation()">
+                        <span id="start-btn-icon"></span>
+                        <span id="start-btn-text">START AUTOMATION</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TERMINAL VIEW -->
+            <div id="terminal-view" class="view-section hidden">
+                <div class="terminal-header">
+                    <span>LIVE LOGS</span>
+                    <button class="stop-btn" onclick="stopAutomation()">STOP PROCESS</button>
+                </div>
+                <div class="terminal-window" id="terminal-output">
+                    <div class="log-line">Waiting for process to start...</div>
+                </div>
+        </main>
+    </div>
+
+    <!-- DETAILED FOOTER -->
+    <footer class="main-footer" id="about">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <!-- Company Column -->
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="https://farmkartgroup.com/about/" target="_blank">About us</a></li>
+                        <li><a href="https://farmkartgroup.com/blog/" target="_blank">Blog</a></li>
+                        <li><a href="https://farmkartgroup.com/contact/" target="_blank">Contact us</a></li>
+                        <li><a href="https://farmkartgroup.com/careers/" target="_blank">Careers</a></li>
+                        <li><a href="https://farmkartgroup.com/our-partners/" target="_blank">Our network</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories Column -->
+                <div class="footer-col">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="https://farmkart.com/collections/nutrients" target="_blank">Nutrients</a></li>
+                        <li><a href="https://farmkart.com/collections/fungicide" target="_blank">Fungicides</a></li>
+                        <li><a href="https://farmkart.com/collections/insecticides" target="_blank">Insecticides</a>
+                        </li>
+                        <li><a href="https://farmkart.com/collections/seeds" target="_blank">Seeds</a></li>
+                        <li><a href="https://farmkart.com/collections/fertilizers" target="_blank">Fertilizers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Connect Column -->
+                <div class="footer-col">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/farmkartofficial/" target="_blank" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 35 36" fill="currentColor">
+                                <path
+                                    d="M17.3782 0.5C7.7959 0.5 0 8.2959 0 17.8782C0 27.4598 7.7959 35.2564 17.3782 35.2564C26.9598 35.2564 34.7564 27.4598 34.7564 17.8782C34.7564 8.2959 26.9612 0.5 17.3782 0.5ZM21.7 18.49H18.8727C18.8727 23.0071 18.8727 28.5672 18.8727 28.5672H14.6832C14.6832 28.5672 14.6832 23.061 14.6832 18.49H12.6917V14.9284H14.6832V12.6247C14.6832 10.9748 15.4672 8.3967 18.9112 8.3967L22.0157 8.4086V11.8659C22.0157 11.8659 20.1292 11.8659 19.7624 11.8659C19.3956 11.8659 18.8741 12.0493 18.8741 12.8361V14.9291H22.0661L21.7 18.49Z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/farmkart" target="_blank" aria-label="LinkedIn">
+                            <svg width="24" height="24" viewBox="0 0 35 36" fill="currentColor">
+                                <path
+                                    d="M17.5 35.5C7.83502 35.5 0 27.665 0 18C0 8.33502 7.83502 0.5 17.5 0.5C27.165 0.5 35 8.33502 35 18C35 27.665 27.165 35.5 17.5 35.5ZM27.9561 19.4082C27.9561 15.5447 25.8928 13.7466 23.1407 13.7466C20.9181 13.7466 19.9268 14.9693 19.3708 15.8247V15.866H19.343C19.3505 15.8526 19.3624 15.8387 19.3708 15.8247V14.042H15.1871C15.2433 15.2221 15.1871 26.6228 15.1871 26.6228H19.3705V19.5962C19.3705 19.219 19.3989 18.8458 19.509 18.5769C19.8123 17.8245 20.4988 17.0474 21.6545 17.0474C23.1691 17.0474 23.7731 18.2014 23.7731 19.8916V26.623H27.9561V19.4082ZM10.811 7.97754C9.38011 7.97754 8.44397 8.91679 8.44397 10.1509C8.44397 11.3588 9.35306 12.3252 10.7562 12.3252H10.7833C12.2423 12.3252 13.1495 11.3588 13.1495 10.1509C13.1218 8.91679 12.2423 7.97754 10.811 7.97754ZM8.69263 26.623H12.8744V14.042H8.69263V26.623Z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/farmkart/" target="_blank" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 35 36" fill="currentColor">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M17.5 35.5C7.83502 35.5 0 27.665 0 18C0 8.33502 7.83502 0.5 17.5 0.5C27.165 0.5 35 8.33502 35 18C35 27.665 27.165 35.5 17.5 35.5ZM21.7836 9.39819H13.8094C11.1015 9.39819 8.89832 11.6016 8.89832 14.3096V22.2837C8.89832 24.9918 11.1015 27.1948 13.8094 27.1948H21.7836C24.4918 27.1948 26.6949 24.9917 26.6949 22.2837V14.3096C26.695 11.6016 24.4918 9.39819 21.7836 9.39819ZM25.116 22.2837C25.116 24.1211 23.6211 25.616 21.7837 25.616H13.8094C11.9721 25.6161 10.4773 24.1211 10.4773 22.2837V14.3096C10.4773 12.4722 11.9721 10.9773 13.8094 10.9773H21.7836C23.621 10.9773 25.116 12.4722 25.116 14.3096V22.2837ZM17.7966 14.7373C15.5069 14.7373 13.644 16.6001 13.644 18.8899C13.644 21.1796 15.5069 23.0425 17.7966 23.0425C20.0864 23.0425 21.9491 21.1796 21.9491 18.8899C21.9491 16.6001 20.0864 14.7373 17.7966 14.7373ZM17.7966 21.7646C16.2115 21.7646 14.9218 20.4751 14.9218 18.8899C14.9218 17.3046 16.2114 16.0149 17.7966 16.0149C19.3819 16.0149 20.6715 17.3046 20.6715 18.8899C20.6715 20.4751 19.3818 21.7646 17.7966 21.7646ZM21.9491 12.3645C21.6374 12.3645 21.3312 12.4906 21.1111 12.7117C20.8899 12.9317 20.7627 13.238 20.7627 13.5508C20.7627 13.8626 20.89 14.1688 21.1111 14.3899C21.3311 14.6099 21.6374 14.7373 21.9491 14.7373C22.2619 14.7373 22.5672 14.6099 22.7883 14.3899C23.0094 14.1688 23.1356 13.8625 23.1356 13.5508C23.1356 13.238 23.0094 12.9317 22.7883 12.7117C22.5683 12.4906 22.2619 12.3645 21.9491 12.3645Z" />
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/farmkart" target="_blank" aria-label="X (Twitter)">
+                            <svg width="24" height="24" viewBox="0 0 35 36" fill="currentColor">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M0 17.8782C0 8.2959 7.7959 0.5 17.3782 0.5C26.9612 0.5 34.7564 8.2959 34.7564 17.8782C34.7564 27.4598 26.9598 35.2564 17.3782 35.2564C7.7959 35.2564 0 27.4598 0 17.8782ZM16.2757 19.1672L9.04566 9.5H14.618L19.3579 15.8377L25.2242 9.5H26.8616L20.0895 16.8161L27.7263 27.0271H22.154L17.0073 20.1457L10.6375 27.0271H9L16.2757 19.1672ZM14.0136 10.7062H11.4537L22.758 25.8207H25.3179L14.0136 10.7062Z" />
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- App Column -->
+                <div class="footer-col">
+                    <h3>Download App</h3>
+                    <a href="https://play.google.com/store/apps/details?id=com.farmkart.mobileapp" target="_blank">
+                        <!-- Using a CDN for Google Play badge or simple text if image fails -->
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                            alt="Get it on Google Play" class="play-store-badge" style="width: 140px;">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2026 <strong>Farmkart Online Services Pvt Ltd</strong>. All rights reserved.
+                </p>
+                <p class="developer">Developed by <strong>Abhishek Nimade</strong></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- LENIS SMOOTH SCROLL -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+    </script>
+
+    <script>
+        const socket = io();
+        let currentModule = null;
+        const statusText = document.querySelector(".status-text");
+        const statusDot = document.querySelector(".status-dot");
+
+        // Navbar Logic - View Switching
+        function showView(viewName, element) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(view => {
+                view.classList.remove('active');
+                view.classList.add('hidden');
+            });
+
+            // Show selected view
+            const targetView = viewName === 'home' ? 'selection-view' : `${viewName}-view`;
+            const view = document.getElementById(targetView);
+            if (view) {
+                view.classList.remove('hidden');
+                view.classList.add('active');
+            }
+
+            // Update navbar active state
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            moveBubble(element);
+        }
+
+        function moveBubble(element) {
+            const bubble = document.querySelector('.bubble-indicator');
+            const navRect = document.querySelector('.nav-items-container').getBoundingClientRect();
+            const itemRect = element.getBoundingClientRect();
+
+            // Calculate relative position
+            const left = itemRect.left - navRect.left;
+            bubble.style.width = `${itemRect.width}px`;
+            bubble.style.transform = `translateX(${left}px)`;
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.liquid-navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Initial Stats Fetch
+        window.onload = () => {
+            // Set initial bubble
+            const active = document.querySelector('.nav-item.active');
+            if (active) moveBubble(active);
+        };
+
+        // Stats Update - Sync both home and dashboard views
+        // Helper to animate numbers
+        function animateValue(id, start, end, duration, suffix = "", decimals = 0) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+
+            if (isNaN(end)) {
+                obj.innerText = end + suffix;
+                return;
+            }
+
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+
+                const value = (ease * (end - start) + start);
+                obj.innerText = value.toLocaleString(undefined, {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }) + suffix;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.innerText = end.toLocaleString(undefined, {
+                        minimumFractionDigits: decimals,
+                        maximumFractionDigits: decimals
+                    }) + suffix;
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Observer for Impact Stats animation
+        const impactObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    // Stagger the number counting slightly to match the CSS entrance
+                    setTimeout(() => animateValue('impact-orders', 1, 5, 2000, 'K+'), 200);
+                    setTimeout(() => animateValue('impact-hours', 1, 120, 2000, '+'), 400);
+                    setTimeout(() => animateValue('impact-accuracy', 1, 99.9, 2000, '%', 1), 600);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        const impactSection = document.querySelector('.impact-stats');
+        if (impactSection) impactObserver.observe(impactSection);
+
+        // Observer for Workflow Steps animation (Timeline)
+        const workflowObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-active');
+                    // We don't unobserve yet because we might want it to re-animate or stay active
+                }
+            });
+        }, { threshold: 0.2 });
+
+        const timelineSteps = document.querySelectorAll('.timeline-step');
+        timelineSteps.forEach(step => workflowObserver.observe(step));
+
+        let statsInitialized = false;
+
+        // Stats Update - Sync both home and dashboard views
+        socket.on('stats-update', (stats) => {
+            const customerEl = document.getElementById('stat-customers');
+            const productEl = document.getElementById('stat-products');
+            const pendingEl = document.getElementById('stat-pending');
+            const completedEl = document.getElementById('stat-completed');
+
+            // Parse numeric values, default to 0
+            const finalCustomers = parseInt(stats.customers) || 0;
+            const finalProducts = parseInt(stats.products) || 0;
+            const finalPending = parseInt(stats.pending) || 0;
+            const finalCompleted = parseInt(stats.completed) || 0;
+
+            // Animate only if not already initialized or if significant update
+            if (!statsInitialized) {
+                animateValue('stat-customers', 1, finalCustomers, 2500);
+                animateValue('stat-products', 1, finalProducts, 2000);
+                animateValue('stat-pending', 0, finalPending, 1000);
+                animateValue('stat-completed', 1, finalCompleted, 2500);
+
+                // Dashboard view counterparts
+                animateValue('dash-stat-customers', 1, finalCustomers, 2500);
+                animateValue('dash-stat-products', 1, finalProducts, 2000);
+                animateValue('dash-stat-pending', 0, finalPending, 1000);
+                animateValue('dash-stat-completed', 1, finalCompleted, 2500);
+
+                statsInitialized = true;
+            } else {
+                // Just update text for subsequent granular updates to avoid constant re-animation
+                if (customerEl) customerEl.innerText = finalCustomers.toLocaleString();
+                if (productEl) productEl.innerText = finalProducts.toLocaleString();
+                if (pendingEl) pendingEl.innerText = finalPending.toLocaleString();
+                if (completedEl) completedEl.innerText = finalCompleted.toLocaleString();
+
+                document.getElementById('dash-stat-customers').innerText = finalCustomers.toLocaleString();
+                document.getElementById('dash-stat-products').innerText = finalProducts.toLocaleString();
+                document.getElementById('dash-stat-pending').innerText = finalPending.toLocaleString();
+                document.getElementById('dash-stat-completed').innerText = finalCompleted.toLocaleString();
+            }
+        });
+
+        function selectModule(module) {
+            currentModule = module;
+
+            // Hide all views globally rather than just selection-view
+            document.querySelectorAll('.view-section').forEach(view => {
+                view.classList.remove('active');
+                view.classList.add('hidden');
+            });
+
+            document.getElementById('config-view').classList.remove('hidden');
+            document.getElementById('config-view').classList.add('active');
+
+            const titles = {
+                booking: 'Order Booking Automation',
+                invoice: 'Invoice Generation Automation',
+                ofd: 'Out For Delivery Automation',
+                cancel: 'Order Cancellation Automation'
+            };
+            document.getElementById('module-title').innerText = titles[module] || 'Automation';
+
+            // Dynamic subtitle
+            const subtitles = {
+                cancel: 'Cancel orders fetched from Google Sheet and sync status back.'
+            };
+            let subtitleEl = document.getElementById('module-subtitle');
+            if (subtitleEl) subtitleEl.innerText = subtitles[module] || '';
+
+            // Cancel card warning style
+            const configView = document.getElementById('config-view');
+            if (module === 'cancel') {
+                configView.classList.add('cancel-mode');
+            } else {
+                configView.classList.remove('cancel-mode');
+            }
+
+            // Show/hide cancel warning
+            const warningBanner = document.getElementById('cancel-warning-banner');
+            if (warningBanner) warningBanner.style.display = module === 'cancel' ? 'flex' : 'none';
+
+            // Dynamic label & placeholder for cancel module
+            const startRowLabel = document.getElementById('startRow-label');
+            const startRowInput = document.getElementById('startRow');
+            const startBtnIcon = document.getElementById('start-btn-icon');
+            const startBtnText = document.getElementById('start-btn-text');
+
+            if (module === 'cancel') {
+                if (startRowLabel) startRowLabel.innerHTML = 'Row Number <em style="opacity:0.6;font-size:12px;">or</em> Order ID &nbsp;<span class="label-info">(4-digit = Row No. | 6-digit = Order ID)</span>';
+                if (startRowInput) startRowInput.placeholder = 'e.g. 1325 (row) or 211582 (order ID)';
+                
+                const startBtn = document.getElementById('start-btn');
+                if (startBtn) startBtn.className = 'cancel-start-btn';
+
+                if (startBtnIcon) {
+                    startBtnIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>`;
+                }
+                if (startBtnText) startBtnText.innerText = 'START CANCELLATION';
+            } else {
+                if (startRowLabel) startRowLabel.textContent = 'Start Row Number';
+                if (startRowInput) startRowInput.placeholder = 'e.g. 5000';
+                
+                const startBtn = document.getElementById('start-btn');
+                if (startBtn) startBtn.className = '';
+
+                if (startBtnIcon) startBtnIcon.innerHTML = '';
+                if (startBtnText) startBtnText.innerText = 'START AUTOMATION';
+            }
+
+            document.getElementById('limit-group').style.display = 'block';
+        }
+
+        function goBack() {
+            document.getElementById('config-view').classList.remove('active');
+            document.getElementById('config-view').classList.add('hidden');
+
+            const homeNav = document.querySelector('.nav-item[onclick="showView(\'home\', this)"]');
+            if (homeNav) {
+                showView('home', homeNav);
+            } else {
+                document.getElementById('selection-view').classList.remove('hidden');
+                document.getElementById('selection-view').classList.add('active');
+            }
+            currentModule = null;
+        }
+
+        function startAutomation() {
+            const startRow = document.getElementById('startRow').value;
+            const limit = document.getElementById('limit').value;
+
+            if (!startRow) {
+                alert("Please enter a Start Row number.");
+                return;
+            }
+
+            document.getElementById('config-view').classList.remove('active');
+            document.getElementById('config-view').classList.add('hidden');
+
+            document.getElementById('terminal-view').classList.remove('hidden');
+            document.getElementById('terminal-view').classList.add('active');
+
+            document.getElementById('terminal-output').innerHTML = ''; // Clear previous logs
+
+            if (currentModule === 'booking') {
+                socket.emit('start-booking', { startRow, limit });
+            } else if (currentModule === 'invoice') {
+                socket.emit('start-invoice', { startRow, limit });
+            } else if (currentModule === 'cancel') {
+                socket.emit('start-cancel', { startRow, limit });
+            } else {
+                socket.emit('start-ofd', { startRow, limit });
+            }
+
+            // Clear inputs after starting
+            document.getElementById('startRow').value = '';
+            document.getElementById('limit').value = '';
+        }
+
+        function stopAutomation() {
+            socket.emit('stop-process');
+            // Redirect to home
+            showView('home', document.querySelector('.nav-item'));
+        }
+
+        function scrollToSection(id, element) {
+            // First ensure we are on home view
+            if (document.getElementById('selection-view').classList.contains('hidden')) {
+                // We pass 'null' as element to showView to prevent it from resetting the active state improperly if we are about to set it here
+                // But showView sets active state on the element passed to it.
+                // Strategy: Call showView to switch view, BUT then manually update active state to OUR element.
+
+                // Manually switch views without calling showView(..., element) to avoid conflict
+                document.querySelectorAll('.view-section').forEach(view => {
+                    view.classList.remove('active');
+                    view.classList.add('hidden');
+                });
+                document.getElementById('selection-view').classList.remove('hidden');
+                document.getElementById('selection-view').classList.add('active');
+            }
+
+            // Update navbar active state
+            if (element) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+                moveBubble(element);
+            }
+
+            // Then scroll using Lenis
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                if (el) lenis.scrollTo(el);
+            }, 100);
+        }
+
+        // Socket Events
+        socket.on('process-start', (data) => {
+            statusText.innerText = 'Running...';
+            statusDot.style.background = '#00ff00';
+            statusDot.style.boxShadow = '0 0 10px #00ff00';
+        });
+
+        socket.on('process-end', (data) => {
+            statusText.innerText = 'Idle';
+            statusDot.style.background = '#888';
+            statusDot.style.boxShadow = 'none';
+            const term = document.getElementById('terminal-output');
+            term.innerHTML += `<div class="log-line system-msg">--- Process Finished ---</div>`;
+            term.scrollTop = term.scrollHeight;
+        });
+
+        socket.on('log', (msg) => {
+            const term = document.getElementById('terminal-output');
+            const div = document.createElement('div');
+            div.className = 'log-line';
+
+            // Simple coloring
+            if (msg.toLowerCase().includes('error') || msg.toLowerCase().includes('fail')) {
+                div.style.color = '#ff6b6b';
+            } else if (msg.includes('✅') || msg.toLowerCase().includes('success')) {
+                div.style.color = '#51cf66';
+            } else if (msg.includes('warn')) {
+                div.style.color = '#fcc419';
+            }
+
+            // div.innerText = msg; // Old instant way
+            term.appendChild(div);
+
+            // Typing Effect
+            let i = 0;
+            const speed = 10; // ms per char
+
+            function typeWriter() {
+                if (i < msg.length) {
+                    div.textContent += msg.charAt(i);
+                    i++;
+                    term.scrollTop = term.scrollHeight; // Auto-scroll with typing
+                    setTimeout(typeWriter, speed);
+                }
+            }
+
+            typeWriter();
+        });
+
+        // Dark Mode Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        // Check local storage for preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            if (darkModeToggle) darkModeToggle.checked = true;
+        }
+
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

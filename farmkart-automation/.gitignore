@@ -1,0 +1,5 @@
+node_modules/
+.env
+auth.json
+credentials.json
+playwright-chrome-profile/

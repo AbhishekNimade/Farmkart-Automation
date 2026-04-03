@@ -1,0 +1,2 @@
+npx localtunnel --port 3000 - for temp url
+npm start - start project url

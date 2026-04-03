@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+.env
+auth.json
+order-booking-automation/config/google-service-account.json

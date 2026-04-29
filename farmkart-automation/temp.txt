@@ -46,8 +46,8 @@ const ask = (q) => new Promise(r => rl.question(q, r));
 
     // ===== LOGIN =====
     await page.goto("https://kart.farm:8443/Farmkart/index.jsp?status=logout");
-    await page.fill('input[type="text"]', "8754568014");
-    await page.fill('input[type="password"]', "Yash98");
+    await page.fill('input[type="text"]', "9171663972");
+    await page.fill('input[type="password"]', "9171663972");
     await page.click('button:has-text("Login")');
 
     await page.waitForURL("**/dashboard.jsp");

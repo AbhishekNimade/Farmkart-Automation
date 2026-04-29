@@ -116,6 +116,11 @@ const recordAction = async (goal, selector, text) => {
     const page = await context.newPage();
     await injectVisualCursor(page);
 
+    page.on('dialog', async dialog => {
+        console.log(`💬 Page Alert/Dialog popup: "${dialog.message()}"`);
+        await dialog.accept().catch(() => null);
+    });
+
     let isLoggedIn = false;
 
     // Extracted Login Flow for Session Resiliency
@@ -151,6 +156,12 @@ const recordAction = async (goal, selector, text) => {
 
     let inventoryTab = await context.newPage();
     await injectVisualCursor(inventoryTab);
+    
+    inventoryTab.on('dialog', async dialog => {
+        console.log(`💬 Inventory Alert/Dialog popup: "${dialog.message()}"`);
+        await dialog.accept().catch(() => null);
+    });
+
     await inventoryTab.goto("https://kart.farm:8443/Farmkart/inventoryList.jsp", { waitUntil: "domcontentloaded" });
 
     // Function to handle automated stock transfer from other warehouses to Packaging
@@ -552,6 +563,11 @@ const recordAction = async (goal, selector, text) => {
                     console.log("⚠️ Inventory Tab was closed. Recreating...");
                     inventoryTab = await context.newPage();
                     await injectVisualCursor(inventoryTab);
+                    
+                    inventoryTab.on('dialog', async dialog => {
+                        console.log(`💬 Inventory Alert/Dialog popup: "${dialog.message()}"`);
+                        await dialog.accept().catch(() => null);
+                    });
                 }
                 
                 // Ensure we are on the main inventory search page before starting a new search
@@ -759,13 +775,13 @@ const recordAction = async (goal, selector, text) => {
                     // Strategy A: Extract from URL
                     const urlMatch = popupUrl.match(/barcode=\*?([^*&]+)\*?/);
                     if (urlMatch && urlMatch[1]) {
-                        cleanBarcode = urlMatch[1].replace(/\*/g, '').replace(/\s/g, '').trim();
+                        cleanBarcode = decodeURIComponent(urlMatch[1]).replace(/\*/g, '').trim();
                     } else {
                         // Strategy B: Extract from Page Text
                         const bodyText = await popup.innerText('body').catch(() => "");
-                        const textMatch = bodyText.match(/\*?\s*([\d\w-]+)\s*\*?/);
+                        const textMatch = bodyText.match(/\*?\s*([\d\w\s-]+)\s*\*?/);
                         if (textMatch && textMatch[1]) {
-                           cleanBarcode = textMatch[1].replace(/\*/g, '').replace(/\s/g, '').trim();
+                           cleanBarcode = textMatch[1].replace(/\*/g, '').trim();
                         }
                     }
 
@@ -788,12 +804,12 @@ const recordAction = async (goal, selector, text) => {
                         const popupUrl = foundPage.url();
                         const urlMatch = popupUrl.match(/barcode=\*?([^*&]+)\*?/);
                         if (urlMatch && urlMatch[1]) {
-                            cleanBarcode = urlMatch[1].replace(/\*/g, '').replace(/\s/g, '').trim();
+                            cleanBarcode = decodeURIComponent(urlMatch[1]).replace(/\*/g, '').trim();
                         } else {
                             const bodyText = await foundPage.innerText('body').catch(() => "");
-                            const textMatch = bodyText.match(/\*?\s*([\d\w-]+)\s*\*?/);
+                            const textMatch = bodyText.match(/\*?\s*([\d\w\s-]+)\s*\*?/);
                             if (textMatch && textMatch[1]) {
-                               cleanBarcode = textMatch[1].replace(/\*/g, '').replace(/\s/g, '').trim();
+                               cleanBarcode = textMatch[1].replace(/\*/g, '').trim();
                             }
                         }
                         await foundPage.close().catch(() => null);
@@ -802,7 +818,7 @@ const recordAction = async (goal, selector, text) => {
                         const barcodeHref = await firstPrintBtn.getAttribute('href').catch(() => "");
                         const urlMatch = barcodeHref ? barcodeHref.match(/barcode=\*?([^*&]+)\*?/) : null;
                         if (urlMatch && urlMatch[1]) {
-                            cleanBarcode = urlMatch[1].replace(/\*/g, '').replace(/\s/g, '').trim();
+                            cleanBarcode = decodeURIComponent(urlMatch[1]).replace(/\*/g, '').trim();
                         }
                     }
                 }
@@ -838,8 +854,14 @@ const recordAction = async (goal, selector, text) => {
                     if (await input.count() > 0 && await input.isVisible()) {
                         await input.scrollIntoViewIfNeeded();
                         await input.fill(cleanBarcode);
-                        await input.press('Enter');
-                        await wait(2000); // 🕒 Wait for AJAX (Shelf, Expiry, Qty) to populate after barcode
+                        
+                        await input.evaluate(el => {
+                            el.dispatchEvent(new Event('input', { bubbles: true }));
+                            el.dispatchEvent(new Event('change', { bubbles: true }));
+                        }).catch(() => null);
+                        
+                        // We avoid pressing Enter to prevent premature form submission
+                        await wait(1000); // 🕒 Wait a bit before hitting Verify
                         typed = true;
                         break;
                     }
@@ -849,7 +871,12 @@ const recordAction = async (goal, selector, text) => {
                     console.log("⚠️ Could not find barcode input with specific selectors. Trying first generic input in row...");
                     const genericInput = page.locator('input[type="text"]:not([readonly])').nth(i - 1);
                     await genericInput.fill(cleanBarcode);
-                    await genericInput.press('Enter');
+                    
+                    await genericInput.evaluate(el => {
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                    }).catch(() => null);
+                    await wait(1000);
                 }
 
                 await wait(2000); // Wait for registration
@@ -906,7 +933,7 @@ const recordAction = async (goal, selector, text) => {
 
                 if (await expirySelectLoc.count() > 0) {
                     console.log(`👆 Selecting first available Expiry batch for Product ${i}...`);
-                    await expirySelectLoc.selectOption({ index: 1 }).catch(() => null);
+                    await expirySelectLoc.selectOption({ index: 1 }, { timeout: 3000 }).catch(() => null);
                     await wait(1000); // Wait for subsequent AJAX chains
                 }
 
@@ -914,7 +941,7 @@ const recordAction = async (goal, selector, text) => {
                 const shelfCodeSelectLoc = page.locator(`#shelfCode_${i}_1, select[name^="shelfCode_${i}"]`).filter({ visible: true }).first();
                 if (await shelfCodeSelectLoc.count() > 0) {
                     console.log(`👆 Selecting first available Shelf Code for Product ${i}...`);
-                    await shelfCodeSelectLoc.selectOption({ index: 1 }).catch(() => null);
+                    await shelfCodeSelectLoc.selectOption({ index: 1 }, { timeout: 3000 }).catch(() => null);
                     await wait(500);
                 }
 

@@ -16,8 +16,8 @@ async function ensureLogin(page) {
     const loginFormExists = await page.locator('input[name="strLoginId"]').count() > 0;
     if (loginFormExists) {
         console.log("🔐 Logging in...");
-        await page.fill('input[name="strLoginId"]', process.env.FARMKART_ID || "SP22_FK_INDN_7335");
-        await page.fill('input[name="strPassword"]', process.env.FARMKART_PWD || "FK@INDN@9248");
+        await page.fill('input[name="strLoginId"]', process.env.FARMKART_ID || "9171663972");
+        await page.fill('input[name="strPassword"]', process.env.FARMKART_PWD || "9171663972");
         
         await Promise.all([
             page.waitForNavigation({ waitUntil: "domcontentloaded" }),

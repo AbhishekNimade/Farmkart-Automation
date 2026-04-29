@@ -57,43 +57,45 @@ export async function loginDelhivery(page) {
     try {
         console.log("   - Waiting for Password input...");
 
-        // Wait specifically for password field
-        await page.waitForSelector('input[type="password"]', { state: 'visible', timeout: 30000 });
+        // Use Playwright `:visible` pseudo-class INSIDE the selector string so it filters hidden elements out
+        // instead of picking the first hidden element and waiting for it to become visible forever.
+        const passwordSelector = 'input[placeholder="Enter your password"]:visible';
+        await page.waitForTimeout(3000); // Give time for navigation if any
+        await page.waitForSelector(passwordSelector, { timeout: 30000 });
 
-        // User said "email paswords dono" -> Check if we need to re-enter email in a new field?
-        // Sometimes the UI changes to show Email (readonly) + Password.
-        // Or sometimes it asks for Email AGAIN.
-
-        // Let's check if the email input is still there and empty.
-        const emailSelector = 'input[placeholder="Enter your email ID"]'; // Re-use if present
-        if (await page.$(emailSelector)) {
-            const emailValue = await page.inputValue(emailSelector);
-            if (!emailValue) {
-                console.log("   - Re-entering email (if required)...");
-                await page.fill(emailSelector, process.env.DELHIVERY_EMAIL);
+        // Sometimes it asks for Email AGAIN. Check if any empty email/username field is present
+        const ssoEmailSelector = 'input[name="username"], input[name="email"], input[type="email"]';
+        const ssoEmailInput = await page.$(ssoEmailSelector);
+        if (ssoEmailInput) {
+            const isVisible = await ssoEmailInput.isVisible();
+            if (isVisible) {
+                const ssoEmailValue = await page.inputValue(ssoEmailSelector);
+                if (!ssoEmailValue) {
+                    console.log("   - Entering email on SSO page...");
+                    await page.fill(ssoEmailSelector, process.env.DELHIVERY_EMAIL);
+                }
             }
         }
 
         await page.waitForTimeout(1000);
-        await page.fill('input[type="password"]', process.env.DELHIVERY_PASSWORD);
+        // Fill the password using the precise visible locator. 
+        // We use locator().first() to avoid strict mode errors if multiple visible fields appear somehow.
+        await page.locator('input[type="password"]:visible').first().fill(process.env.DELHIVERY_PASSWORD);
 
         console.log("   - Clicking Sign In...");
 
         // Try multiple selectors for the login button based on user info
-        // User provided: <input ... id="kc-login" ... value="Login">
-        // It's an INPUT type="submit", not a BUTTON tag.
-
         try {
-            // Primary target: ID
-            await page.click('#kc-login', { timeout: 5000 });
+            // New UI Login button (typically a button element with text "Login")
+            await page.locator('button:has-text("Login"):visible').first().click({ timeout: 5000 });
         } catch (e) {
-            console.log("   ⚠️ #kc-login not found, trying fallback selectors...");
-            // Fallback: value="Login" or text
+            console.log("   ⚠️ button:has-text('Login') not found, trying fallback selectors...");
             try {
-                await page.click('input[value="Login"]', { timeout: 5000 });
+                // Primary target: ID from old UI
+                await page.locator('#kc-login:visible').first().click({ timeout: 5000 });
             } catch (e2) {
-                // Last resort: standard text
-                await page.click('button:has-text("Sign in"), input[type="submit"]', { timeout: 5000 });
+                // Last resort
+                await page.locator('input[value="Login"]:visible, button:has-text("Sign in"):visible, input[type="submit"]:visible').first().click({ timeout: 5000 });
             }
         }
 

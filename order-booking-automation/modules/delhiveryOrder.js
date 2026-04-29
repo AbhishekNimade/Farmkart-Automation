@@ -430,35 +430,56 @@ export async function createOrder(page, orderData) {
             // [STEP 8/9] GET AWB NO
             console.log("\n[STEP 8/9] Extracting AWB Number...");
             try {
-                // Wait for the success modal/post-creation state
+                // Wait for the success modal/post-creation state fully
                 await page.waitForTimeout(3000);
 
-                // 1. Click 'Get AWB No' if visible
+                // 1. Click 'Get AWB No' if visible (older flow)
                 const getAwbBtn = page.locator('button.ap-button').filter({ hasText: /Get AWB No/i }).first();
                 if (await getAwbBtn.isVisible()) {
                     await getAwbBtn.click();
                     await page.waitForTimeout(2000);
                 }
 
-                // 2. Locate and scrap AWB string
-                // Typical Delhivery AWB is numeric or alphanumeric (e.g., 1234567890)
-                const awbElement = page.locator('div, span, p').filter({ hasText: /AWB/i }).filter({ hasText: /\d{10,}/ }).first();
-                const awbRaw = await awbElement.innerText().catch(() => "");
-                const awbMatch = awbRaw.match(/\d{10,}/); // 10+ digits
+                let extractedAwb = null;
 
-                if (awbMatch) {
-                    awbNumber = awbMatch[0];
-                    console.log(`   ✅ AWB Extracted: ${awbNumber}`);
+                // 2. New Fallproof AWB Extraction Loop
+                // Delhivery AWBs are 13-14 digits (e.g. 20886710017452 is 14)
+                // Order ID is 12 digits. Phone is 10.
+                // Ergo, any 13 to 18 digit pure number on screen is our AWB!
+                for (let i = 0; i < 6; i++) {
+                    extractedAwb = await page.evaluate(() => {
+                        const bodyText = document.body.innerText || "";
+                        
+                        // Priority 1: 13-18 digits near "AWB" or "Tracker"
+                        const contextMatch = bodyText.match(/(?:AWB|Tracker)[\s\S]{0,300}?\b(\d{13,18})\b/i);
+                        if (contextMatch) return contextMatch[1];
+                        
+                        // Priority 2: ANY 13-18 digit standalone number
+                        const globalMatch = bodyText.match(/\b(\d{13,18})\b/);
+                        if (globalMatch) return globalMatch[1];
+                        
+                        return null;
+                    });
+                    
+                    if (extractedAwb) break;
+                    
+                    // Wait a bit and retry (in case tracking UI is still loading from server)
+                    console.log(`   ⏳ Waiting for AWB to appear... (attempt ${i + 1}/6)`);
+                    await page.waitForTimeout(1500);
+                }
+
+                if (extractedAwb) {
+                    awbNumber = extractedAwb;
+                    console.log(`   ✅ AWB Safely Extracted: ${awbNumber}`);
                 } else {
-                    console.log("   ⚠️ AWB not found in text. Attempting secondary capture...");
-                    // Try to find any stand-alone 10+ digit number in a modal
-                    const modal = page.locator('.ap-modal, [role="dialog"]').first();
-                    if (await modal.isVisible()) {
-                        const modalText = await modal.innerText();
-                        const secondMatch = modalText.match(/\d{12,}/) || modalText.match(/\d{10,}/);
-                        if (secondMatch) {
-                            awbNumber = secondMatch[0];
-                            console.log(`   ✅ AWB Extracted (Modal): ${awbNumber}`);
+                    console.log("   ⚠️ AWB not found via evaluate. Attempting Playwright locator fallback...");
+                    const trackerBox = page.locator('div, section, p, span').filter({ hasText: /\b\d{13,18}\b/ }).last();
+                    if (await trackerBox.isVisible()) {
+                        const text = await trackerBox.innerText();
+                        const match = text.match(/\b(\d{13,18})\b/);
+                        if (match) {
+                            awbNumber = match[1];
+                            console.log(`   ✅ AWB Extracted (Locator Fallback): ${awbNumber}`);
                         }
                     }
                 }
@@ -542,18 +563,23 @@ async function fillNewProductForm(page, product) {
         // 5. Shipping Package (Select First/Random)
         // Click dropdown -> ArrowDown -> Enter
         console.log("   - Selecting Shipping Package...");
-        const packageTrigger = page.locator('.ap-meta-label').filter({ hasText: 'Shipping Package' })
+        const packageTrigger = page.locator('.ap-meta-label').filter({ hasText: /Shipping Package/i })
             .locator('..').locator('.ap-menu-trigger-root').first();
 
-        await packageTrigger.click();
-        await page.waitForTimeout(300);
+        // Using force: true to bypass the "dialog intercepts pointer events" Playwright error 
+        await packageTrigger.click({ force: true });
+        await page.waitForTimeout(500);
         await page.keyboard.press("ArrowDown");
         await page.keyboard.press("Enter");
 
         // 6. Submit
         await page.waitForTimeout(500);
-        const createBtn = page.locator('button.ap-button.blue.filled').filter({ hasText: 'Create New Product' }).last();
-        await createBtn.click({ force: true });
+        // Removed brittle classes (.blue.filled) as UI design might have changed
+        const createBtn = page.locator('button').filter({ hasText: /Create New Product|Create Product/i }).last();
+        
+        // Use a short timeout so we don't hang for 30 seconds if the button is slightly different
+        await createBtn.waitFor({ state: 'visible', timeout: 5000 });
+        await createBtn.click({ force: true, timeout: 5000 });
 
         console.log("   ✅ New Product Created.");
         await page.waitForTimeout(1500); // Wait for modal to close and row to appear

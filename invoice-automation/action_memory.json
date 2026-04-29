@@ -1,178 +1,304 @@
 {
   "history": [
     {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-26T08:12:09.142Z"
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-06T06:21:46.513Z"
     },
     {
       "goal": "login",
       "selector": "button:has-text(\"Login\")",
       "text": "Login",
-      "timestamp": "2026-03-26T08:13:34.512Z"
+      "timestamp": "2026-04-06T06:22:18.539Z"
     },
     {
       "goal": "login",
       "selector": "button:has-text(\"Login\")",
       "text": "Login",
-      "timestamp": "2026-03-26T09:37:44.491Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-28T03:25:28.440Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-28T04:22:00.726Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-28T04:24:06.030Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-28T04:31:40.155Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-28T04:37:04.707Z"
+      "timestamp": "2026-04-09T04:46:20.200Z"
     },
     {
       "goal": "generate_invoice",
       "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
       "text": "Generate Invoice",
-      "timestamp": "2026-03-28T04:38:10.220Z"
+      "timestamp": "2026-04-09T04:47:53.087Z"
     },
     {
       "goal": "login",
       "selector": "button:has-text(\"Login\")",
       "text": "Login",
-      "timestamp": "2026-03-28T05:18:40.350Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-03-30T07:14:57.620Z"
+      "timestamp": "2026-04-13T05:30:01.695Z"
     },
     {
       "goal": "generate_invoice",
       "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
       "text": "Generate Invoice",
-      "timestamp": "2026-03-30T07:16:07.456Z"
+      "timestamp": "2026-04-13T05:33:55.308Z"
     },
     {
       "goal": "login",
       "selector": "button:has-text(\"Login\")",
       "text": "Login",
-      "timestamp": "2026-04-03T04:46:42.966Z"
+      "timestamp": "2026-04-14T03:23:00.587Z"
     },
     {
       "goal": "generate_invoice",
       "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
       "text": "Generate Invoice",
-      "timestamp": "2026-04-03T04:47:51.284Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T04:57:36.523Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:05:19.032Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:07:20.968Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:12:19.470Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:32:22.652Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:34:11.378Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:34:53.116Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T05:37:33.518Z"
+      "timestamp": "2026-04-14T03:25:07.721Z"
     },
     {
       "goal": "generate_invoice",
       "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
       "text": "Generate Invoice",
-      "timestamp": "2026-04-03T05:59:10.423Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T06:02:32.158Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T06:03:03.505Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T06:03:45.990Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T06:18:29.106Z"
-    },
-    {
-      "goal": "login",
-      "selector": "button:has-text(\"Login\")",
-      "text": "Login",
-      "timestamp": "2026-04-03T06:23:18.553Z"
+      "timestamp": "2026-04-14T03:26:08.081Z"
     },
     {
       "goal": "generate_invoice",
       "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
       "text": "Generate Invoice",
-      "timestamp": "2026-04-03T06:26:05.477Z"
+      "timestamp": "2026-04-14T03:27:08.607Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-16T09:20:33.382Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-16T09:22:06.009Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-16T09:25:28.207Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-16T09:26:29.440Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-21T05:52:59.324Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-21T05:54:08.190Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-22T08:35:50.734Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-22T08:36:50.236Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-22T08:37:51.751Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-23T04:41:21.398Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-23T04:42:54.153Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-23T04:44:25.658Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-23T06:22:32.549Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-23T06:23:30.469Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-24T09:12:03.125Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-24T09:13:03.106Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-24T09:14:38.072Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-24T11:40:58.501Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-24T11:42:31.604Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-24T11:43:32.472Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-25T03:55:03.061Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-25T03:56:36.398Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-25T05:38:32.217Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-25T05:39:33.480Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-25T05:41:31.061Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-27T03:38:10.801Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-27T03:39:09.845Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-27T03:40:45.133Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-27T03:41:45.718Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-28T04:53:22.717Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-28T04:54:21.540Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-28T05:00:10.960Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-28T05:20:49.526Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-28T05:22:22.961Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-28T05:23:23.112Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-29T03:18:41.912Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-29T03:19:41.919Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-29T03:25:25.072Z"
+    },
+    {
+      "goal": "login",
+      "selector": "button:has-text(\"Login\")",
+      "text": "Login",
+      "timestamp": "2026-04-29T03:28:22.362Z"
+    },
+    {
+      "goal": "generate_invoice",
+      "selector": "button[type=\"submit\"]:has-text(\"Generate Invoice\"), button.btn-primary:has-text(\"Generate Invoice\")",
+      "text": "Generate Invoice",
+      "timestamp": "2026-04-29T03:29:13.398Z"
     }
   ]
 }

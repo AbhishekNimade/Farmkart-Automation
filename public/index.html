@@ -10,6 +10,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="icon" href="R logo-01.png" type="image/png">
     <link rel="shortcut icon" href="R logo-01.png" type="image/png">
 </head>
@@ -151,12 +153,14 @@
                         <p>Launch your specialized automation flows</p>
                     </div>
                     <div class="cards-container">
-                        <div class="card" onclick="selectModule('invoice')">
+                        <!-- INVOICE CARD -->
+                        <div class="card invoice-card" onclick="selectModule('invoice')">
+                            <div class="module-status">
+                                <span class="status-dot"></span>
+                                SYSTEM READY
+                            </div>
                             <div class="card-icon">
-                                <!-- SVG Icon: File Text / Invoice -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                     <polyline points="14 2 14 8 20 8"></polyline>
                                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -166,24 +170,23 @@
                             </div>
                             <h2>Invoice Generation</h2>
                             <p>Automated invoice creation for verified pending orders.</p>
-                            <div class="card-cta" onclick="selectModule('invoice')">
-                                <span>Start Automation</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                            <div class="card-cta">
+                                <span>Initialize Flow</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </div>
                         </div>
-                        <div class="card" onclick="selectModule('booking')">
+
+                        <!-- BOOKING CARD -->
+                        <div class="card booking-card" onclick="selectModule('booking')">
+                            <div class="module-status">
+                                <span class="status-dot"></span>
+                                SYSTEM READY
+                            </div>
                             <div class="card-icon">
-                                <!-- SVG Icon: Box/Package -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path
-                                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                                    </path>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                                     <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                                 </svg>
@@ -191,20 +194,21 @@
                             <h2>Order Booking</h2>
                             <p>Automated order processing and booking via Delhivery.</p>
                             <div class="card-cta">
-                                <span>Start Automation</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <span>Initialize Flow</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </div>
                         </div>
-                        <div class="card" onclick="selectModule('ofd')">
+
+                        <!-- OFD CARD -->
+                        <div class="card ofd-card" onclick="selectModule('ofd')">
+                            <div class="module-status">
+                                <span class="status-dot"></span>
+                                SYSTEM READY
+                            </div>
                             <div class="card-icon">
-                                <!-- SVG Icon: Truck -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="1" y="3" width="15" height="13"></rect>
                                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                                     <circle cx="5.5" cy="18.5" r="2.5"></circle>
@@ -214,20 +218,21 @@
                             <h2>Out For Delivery</h2>
                             <p>Automate OFD status updates and daily reporting.</p>
                             <div class="card-cta">
-                                <span>Start Automation</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <span>Initialize Flow</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </div>
                         </div>
+
+                        <!-- CANCEL CARD -->
                         <div class="card cancel-card" onclick="selectModule('cancel')">
+                            <div class="module-status">
+                                <span class="status-dot"></span>
+                                SYSTEM READY
+                            </div>
                             <div class="card-icon">
-                                <!-- SVG Icon: X Circle / Cancel -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <line x1="15" y1="9" x2="9" y2="15"></line>
                                     <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -236,10 +241,8 @@
                             <h2>Order Cancellation</h2>
                             <p>Automate order cancellation from Google Sheet with CMS sync.</p>
                             <div class="card-cta">
-                                <span>Start Automation</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <span>Initialize Flow</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </div>
@@ -601,137 +604,102 @@
 
             <!-- DASHBOARD VIEW -->
             <div id="dashboard-view" class="view-section hidden">
-                <div class="hero-section">
-                    <h1>Dashboard <span class="highlight">Overview</span></h1>
-                    <p class="tagline">Real-time Monitoring & Quick Actions</p>
-                    <div class="divider"></div>
+                <!-- AI ANALYTICS DASHBOARD -->
+                <div class="ai-analytics-section">
+                    <!-- MISSION CONTROL HEADER (MATCHING IMAGE) -->
+                    <div class="dashboard-internal-header">
+                        <div class="mission-control-top-bar">
+                            <div class="mc-logo-area">
+                                <h1>Farmart AI <span>| Automation Hub</span></h1>
+                            </div>
+                            <div class="mc-top-actions">
+                                <div class="mc-action-item" onclick="fetchInitialAiStats(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                                    Refresh Data
+                                </div>
+                                <div class="mc-action-item">abhishekn@myrsolar.com</div>
+                                <div class="mc-action-item logout">Logout</div>
+                            </div>
+                        </div>
+                        <div class="mission-control-nav-bar">
+                            <div class="mc-section-title" id="current-section-title">Overview</div>
+                            <div class="mc-nav-items">
+                                <div class="mc-nav-link active" onclick="filterAiStats('all', this)">Overview</div>
+                                <div class="mc-nav-link" onclick="filterAiStats('invoice', this)">Invoices</div>
+                                <div class="mc-nav-link" onclick="filterAiStats('booking', this)">Bookings</div>
+                                <div class="mc-nav-link" onclick="filterAiStats('ofd', this)">Processing</div>
+                                <div class="mc-nav-link" onclick="filterAiStats('cancel', this)">Cancellations</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRIMARY METRICS -->
+                    <div class="primary-metrics">
+                        <div class="primary-card border-top-green">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <div class="primary-card-title" style="margin-bottom: 0;">Total Tasks Automated</div>
+                                <div class="time-unit-selector task-timeframe-selector">
+                                    <span class="unit-toggle" onclick="changeTaskTimeframe('today', this)">Today</span>
+                                    <span class="unit-toggle" onclick="changeTaskTimeframe('week', this)">Week</span>
+                                    <span class="unit-toggle" onclick="changeTaskTimeframe('month', this)">Month</span>
+                                    <span class="unit-toggle active" onclick="changeTaskTimeframe('all', this)">All</span>
+                                </div>
+                            </div>
+                            <div class="primary-card-value" id="ai-total-tasks">0</div>
+                            <div class="primary-card-subtext" id="ai-task-timeframe-label">Overall successful AI executions</div>
+                        </div>
+                        <div class="primary-card border-top-blue">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <div class="primary-card-title" style="margin-bottom: 0;">Total Time Saved</div>
+                                <div class="time-unit-selector">
+                                    <span class="unit-toggle" onclick="changeTimeUnit('min', this)">Min</span>
+                                    <span class="unit-toggle active" onclick="changeTimeUnit('hrs', this)">Hrs</span>
+                                    <span class="unit-toggle" onclick="changeTimeUnit('days', this)">Days</span>
+                                </div>
+                            </div>
+                            <div class="primary-card-value"><span id="ai-total-hours">0.00</span> <span id="current-time-unit" style="font-size:1.2rem; color: #a0aec0;">Hrs</span></div>
+                            <div class="primary-card-subtext">Manual hours avoided</div>
+                        </div>
+                    </div>
+
+                    <!-- SECONDARY METRICS (Task Breakdown) -->
+                    <div class="secondary-metrics">
+                        <div id="card-invoice" class="primary-card border-top-green" style="padding: 16px;">
+                            <div class="primary-card-title" style="color: #4ade80;">Invoices Gen</div>
+                            <div class="primary-card-value" style="font-size: 2rem;" id="ai-stat-invoice">0</div>
+                            <div class="primary-card-subtext" id="ai-time-invoice">0 Hrs Saved</div>
+                        </div>
+                        <div id="card-booking" class="primary-card border-top-blue" style="padding: 16px;">
+                            <div class="primary-card-title" style="color: #3b82f6;">Orders Booked</div>
+                            <div class="primary-card-value" style="font-size: 2rem;" id="ai-stat-booking">0</div>
+                            <div class="primary-card-subtext" id="ai-time-booking">0 Hrs Saved</div>
+                        </div>
+                        <div id="card-ofd" class="primary-card border-top-purple" style="padding: 16px;">
+                            <div class="primary-card-title" style="color: #a855f7;">Out for Delivery</div>
+                            <div class="primary-card-value" style="font-size: 2rem;" id="ai-stat-ofd">0</div>
+                            <div class="primary-card-subtext" id="ai-time-ofd">0 Hrs Saved</div>
+                        </div>
+                        <div id="card-cancel" class="primary-card border-top-red" style="padding: 16px;">
+                            <div class="primary-card-title" style="color: #ef4444;">Cancelled</div>
+                            <div class="primary-card-value" style="font-size: 2rem;" id="ai-stat-cancel">0</div>
+                            <div class="primary-card-subtext" id="ai-time-cancel">0 Hrs Saved</div>
+                        </div>
+                    </div>
+
+                    <!-- DUAL CHARTS -->
+                    <div class="dual-charts-container">
+                        <div class="ai-chart-container">
+                            <h4 style="margin-bottom: 15px; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem;">Task Distribution (Count)</h4>
+                            <div style="height: 250px;"><canvas id="aiPerformanceChart"></canvas></div>
+                        </div>
+                        <div class="ai-chart-container">
+                            <h4 style="margin-bottom: 15px; color: var(--text-secondary); text-transform: uppercase; font-size: 0.85rem;">Time Saved by Module (Hours)</h4>
+                            <div style="height: 250px;"><canvas id="aiTimeChart"></canvas></div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- LIVE STATS DASHBOARD -->
-                <div class="stats-dashboard">
-                    <!-- Customers -->
-                    <div class="stat-card">
-                        <div class="stat-icon customer-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <h3>Total Number of Customer</h3>
-                        <p class="stat-value" id="dash-stat-customers">Loading...</p>
-                    </div>
-                    <!-- Products -->
-                    <div class="stat-card">
-                        <div class="stat-icon product-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
-                        </div>
-                        <h3>Total Number of Products</h3>
-                        <p class="stat-value" id="dash-stat-products">Loading...</p>
-                    </div>
-                    <!-- Pending -->
-                    <div class="stat-card">
-                        <div class="stat-icon pending-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <h3>Orders Pending</h3>
-                        <p class="stat-value" id="dash-stat-pending">Loading...</p>
-                    </div>
-                    <!-- Completed -->
-                    <div class="stat-card">
-                        <div class="stat-icon completed-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <h3>Orders Completed</h3>
-                        <p class="stat-value" id="dash-stat-completed">Loading...</p>
-                    </div>
-                </div>
 
-                <div class="hero-actions dashboard-actions">
-                    <a href="https://kart.farm:8443/Farmkart/dashboard.jsp" target="_blank" class="hero-cta">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                            class="cta-icon">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                        <span>Access Farmkart CMS Portal</span>
-                    </a>
-                </div>
-
-                <!-- QUICK ACTIONS -->
-                <div class="cards-container">
-                    <div class="card" onclick="selectModule('invoice')">
-                        <div class="card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                        </div>
-                        <h2>Invoice Generation</h2>
-                        <p>Automated invoice creation for verified pending orders.</p>
-                    </div>
-                    <div class="card" onclick="selectModule('booking')">
-                        <div class="card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path
-                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                                </path>
-                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                            </svg>
-                        </div>
-                        <h2>Order Booking</h2>
-                        <p>Automated order processing and booking via Delhivery.</p>
-                    </div>
-                    <div class="card" onclick="selectModule('ofd')">
-                        <div class="card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <rect x="1" y="3" width="15" height="13"></rect>
-                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                            </svg>
-                        </div>
-                        <h2>Out For Delivery</h2>
-                        <p>Automate OFD status updates and daily reporting.</p>
-                    </div>
-                    <div class="card cancel-card" onclick="selectModule('cancel')">
-                        <div class="card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="15" y1="9" x2="9" y2="15"></line>
-                                <line x1="9" y1="9" x2="15" y2="15"></line>
-                            </svg>
-                        </div>
-                        <h2>Order Cancellation</h2>
-                        <p>Automate order cancellation from Google Sheet with CMS sync.</p>
-                    </div>
-                </div>
             </div>
 
             <!-- GUIDE VIEW -->
@@ -1580,6 +1548,322 @@
             typeWriter();
         });
 
+        // AI Analytics Chart Logic
+        let aiChart = null;
+        let aiTimeChart = null;
+        let currentAiFilter = 'all';
+
+        function filterAiStats(module, element) {
+            currentAiFilter = module;
+            
+            // Update active pill UI (Mission Control Style)
+            document.querySelectorAll('.mc-nav-link').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Update Section Title Dynamically
+            const titleEl = document.getElementById('current-section-title');
+            if (titleEl) {
+                titleEl.innerText = element.innerText;
+            }
+
+            // Toggle card visibility
+            const cardIds = ['card-invoice', 'card-booking', 'card-ofd', 'card-cancel'];
+            cardIds.forEach(id => {
+                const card = document.getElementById(id);
+                if (module === 'all' || id.includes(module)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update charts if they exist
+            if (aiChart && aiTimeChart) {
+                socket.emit('request-ai-stats');
+            }
+        }
+
+        function fetchInitialAiStats(element) {
+            if (element) {
+                element.classList.add('spinning');
+                // Remove class after animation completes (1s)
+                setTimeout(() => {
+                    element.classList.remove('spinning');
+                }, 1000);
+            }
+            socket.emit('request-ai-stats');
+        }
+
+        function initAiChart() {
+            const ctx1 = document.getElementById('aiPerformanceChart').getContext('2d');
+            const ctx2 = document.getElementById('aiTimeChart').getContext('2d');
+            
+            Chart.defaults.color = '#a0aec0'; // Default text color
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            // Register the datalabels plugin
+            Chart.register(ChartDataLabels);
+
+            const createGradient = (ctx, color1, color2) => {
+                const grad = ctx.createLinearGradient(0, 0, 0, 400);
+                grad.addColorStop(0, color1);
+                grad.addColorStop(1, color2);
+                return grad;
+            };
+
+            const gradients = [
+                createGradient(ctx1, 'rgba(74, 222, 128, 0.8)', 'rgba(74, 222, 128, 0.05)'),
+                createGradient(ctx1, 'rgba(74, 222, 128, 0.8)', 'rgba(74, 222, 128, 0.05)'),
+                createGradient(ctx1, 'rgba(74, 222, 128, 0.8)', 'rgba(74, 222, 128, 0.05)'),
+                createGradient(ctx1, 'rgba(74, 222, 128, 0.8)', 'rgba(74, 222, 128, 0.05)')
+            ];
+
+            const borderColors = ['#4ade80', '#4ade80', '#4ade80', '#4ade80'];
+            
+            const isDark = document.body.classList.contains('dark-mode');
+            const textColor = isDark ? 'rgba(255, 255, 255, 0.7)' : '#475569';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.03)' : '#f1f5f9';
+
+            const chartOptions = {
+                animation: {
+                    duration: 0, // Disable initial entry animation
+                },
+                animations: {
+                    y: {
+                        type: 'number',
+                        duration: 1000, // Keep smooth animation for data updates
+                        easing: 'easeInOutCubic',
+                        from: (ctx) => ctx.chart.scales.y.getPixelForValue(0),
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 35,
+                        bottom: 0,
+                        left: 10,
+                        right: 10
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : '#fff',
+                        titleColor: isDark ? '#fff' : '#0f172a',
+                        bodyColor: isDark ? '#fff' : '#0f172a',
+                        padding: 15,
+                        borderColor: 'rgba(0, 0, 0, 0.1)',
+                        borderWidth: 1,
+                        cornerRadius: 12,
+                        displayColors: false
+                    },
+                    datalabels: {
+                        color: isDark ? '#ffffff' : '#1e293b',
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 8,
+                        font: { size: 12, weight: '700', family: "'Inter', sans-serif" },
+                        formatter: (value) => value > 0 ? value : '',
+                        clip: false
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grace: '20%',
+                        grid: { color: gridColor, drawBorder: false }, 
+                        ticks: { color: textColor, font: { size: 11 } } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: textColor, font: { size: 11, weight: '600' } } 
+                    }
+                }
+            };
+
+            aiChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['INVOICE', 'BOOKING', 'PROCESS', 'CANCEL'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: gradients,
+                        borderColor: borderColors,
+                        borderWidth: 2,
+                        borderRadius: 12,
+                        barThickness: 50,
+                        hoverBackgroundColor: '#4ade80'
+                    }]
+                },
+                options: chartOptions
+            });
+
+            const timeGradient = createGradient(ctx2, 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.05)');
+
+            aiTimeChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['INV (HRS)', 'BOOK (HRS)', 'PROC (HRS)', 'CAN (HRS)'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: timeGradient,
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        borderRadius: 12,
+                        barThickness: 50,
+                        hoverBackgroundColor: '#3b82f6'
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+        let currentTaskTimeframe = 'all';
+
+        function changeTaskTimeframe(timeframe, element) {
+            currentTaskTimeframe = timeframe;
+            
+            // UI Toggle
+            document.querySelectorAll('.task-timeframe-selector .unit-toggle').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Request filtered data from server
+            socket.emit('request-timeframe-stats', timeframe);
+        }
+
+        socket.on('timeframe-stats-response', (stats) => {
+            // Update the main "Total Tasks" number
+            const tasksEl = document.getElementById('ai-total-tasks');
+            if (tasksEl) tasksEl.innerText = stats.total;
+
+            // Update the label text
+            const labelEl = document.getElementById('ai-task-timeframe-label');
+            if (labelEl) {
+                const labelMap = {
+                    'today': 'Successful AI executions today',
+                    'week': 'Successful AI executions this week',
+                    'month': 'Successful AI executions this month',
+                    'all': 'Overall successful AI executions'
+                };
+                labelEl.innerText = labelMap[currentTaskTimeframe];
+            }
+
+            // Update Charts if needed (Optional: update individual cards based on timeframe)
+            // If you want the graphs to also filter, we update their data here
+            if (aiChart) {
+                aiChart.data.datasets[0].data = [stats.invoice, stats.booking, stats.ofd, stats.cancel];
+                aiChart.update();
+            }
+        });
+
+        let currentTimeUnit = 'hrs';
+        let totalAiMinsGlobal = 0;
+
+        function changeTimeUnit(unit, element) {
+            currentTimeUnit = unit;
+            
+            // UI Toggle
+            document.querySelectorAll('.unit-toggle').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Update Label
+            const labelEl = document.getElementById('current-time-unit');
+            if (labelEl) {
+                labelEl.innerText = unit.charAt(0).toUpperCase() + unit.slice(1);
+            }
+
+            updateTotalTimeDisplay();
+        }
+
+        function updateTotalTimeDisplay() {
+            const hoursEl = document.getElementById('ai-total-hours');
+            if (!hoursEl) return;
+
+            let displayValue = 0;
+            if (currentTimeUnit === 'min') {
+                displayValue = totalAiMinsGlobal;
+                hoursEl.innerText = Math.floor(displayValue);
+            } else if (currentTimeUnit === 'hrs') {
+                displayValue = totalAiMinsGlobal / 60;
+                hoursEl.innerText = displayValue.toFixed(2);
+            } else if (currentTimeUnit === 'days') {
+                displayValue = totalAiMinsGlobal / (60 * 24);
+                hoursEl.innerText = displayValue.toFixed(2);
+            }
+        }
+
+        socket.on('ai-stats-update', (data) => {
+            if (!aiChart || !aiTimeChart) initAiChart();
+
+            // Calculate metrics
+            const totalTasks = (data.invoice || 0) + (data.booking || 0) + (data.ofd || 0) + (data.cancel || 0);
+            const invoiceMins = (data.invoice || 0) * 5;
+            const bookingMins = (data.booking || 0) * 5;
+            const ofdMins = (data.ofd || 0) * 3;
+            const cancelMins = (data.cancel || 0) * 3;
+
+            totalAiMinsGlobal = invoiceMins + bookingMins + ofdMins + cancelMins;
+
+            const invHrs = invoiceMins / 60;
+            const bookHrs = bookingMins / 60;
+            const ofdHrs = ofdMins / 60;
+            const canHrs = cancelMins / 60;
+
+            // Direct DOM Updates (No animation)
+            const tasksEl = document.getElementById('ai-total-tasks');
+            if (tasksEl) tasksEl.innerText = totalTasks;
+
+            updateTotalTimeDisplay();
+
+            const statInvEl = document.getElementById('ai-stat-invoice');
+            if (statInvEl) statInvEl.innerText = data.invoice || 0;
+
+            const statBookEl = document.getElementById('ai-stat-booking');
+            if (statBookEl) statBookEl.innerText = data.booking || 0;
+
+            const statOfdEl = document.getElementById('ai-stat-ofd');
+            if (statOfdEl) statOfdEl.innerText = data.ofd || 0;
+
+            const statCanEl = document.getElementById('ai-stat-cancel');
+            if (statCanEl) statCanEl.innerText = data.cancel || 0;
+
+            // Update DOM Time Subtexts
+            document.getElementById('ai-time-invoice').innerText = invHrs.toFixed(1) + " Hrs Saved";
+            document.getElementById('ai-time-booking').innerText = bookHrs.toFixed(1) + " Hrs Saved";
+            document.getElementById('ai-time-ofd').innerText = ofdHrs.toFixed(1) + " Hrs Saved";
+            document.getElementById('ai-time-cancel').innerText = canHrs.toFixed(1) + " Hrs Saved";
+
+            // Update Chart 1 (Counts)
+            const countData = [
+                data.invoice || 0,
+                data.booking || 0,
+                data.ofd || 0,
+                data.cancel || 0
+            ];
+            
+            // Update Chart 2 (Time)
+            const timeData = [
+                parseFloat(invHrs.toFixed(1)),
+                parseFloat(bookHrs.toFixed(1)),
+                parseFloat(ofdHrs.toFixed(1)),
+                parseFloat(canHrs.toFixed(1))
+            ];
+
+            if (currentAiFilter === 'all') {
+                aiChart.data.datasets[0].data = countData;
+                aiTimeChart.data.datasets[0].data = timeData;
+            } else {
+                const index = ['invoice', 'booking', 'ofd', 'cancel'].indexOf(currentAiFilter);
+                aiChart.data.datasets[0].data = countData.map((v, i) => i === index ? v : 0);
+                aiTimeChart.data.datasets[0].data = timeData.map((v, i) => i === index ? v : 0);
+            }
+            
+            aiChart.update();
+            aiTimeChart.update();
+            
+        });
+
         // Dark Mode Logic
         const darkModeToggle = document.getElementById('darkModeToggle');
 
@@ -1597,6 +1881,26 @@
                 } else {
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
+                }
+                
+                // Update Chart Colors for Theme
+                const isDark = document.body.classList.contains('dark-mode');
+                const textColor = isDark ? 'rgba(255, 255, 255, 0.7)' : '#475569';
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.03)' : '#f1f5f9';
+                
+                if (aiChart) {
+                    aiChart.options.scales.x.ticks.color = textColor;
+                    aiChart.options.scales.y.ticks.color = textColor;
+                    aiChart.options.scales.y.grid.color = gridColor;
+                    aiChart.options.plugins.datalabels.color = isDark ? '#ffffff' : '#1e293b';
+                    aiChart.update();
+                }
+                if (aiTimeChart) {
+                    aiTimeChart.options.scales.x.ticks.color = textColor;
+                    aiTimeChart.options.scales.y.ticks.color = textColor;
+                    aiTimeChart.options.scales.y.grid.color = gridColor;
+                    aiTimeChart.options.plugins.datalabels.color = isDark ? '#ffffff' : '#1e293b';
+                    aiTimeChart.update();
                 }
             });
         }

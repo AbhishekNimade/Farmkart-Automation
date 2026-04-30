@@ -4,6 +4,37 @@ const { Server } = require("socket.io");
 const { spawn } = require("child_process");
 const path = require("path");
 const cors = require("cors");
+const fs = require("fs");
+
+const dbPath = path.join(__dirname, 'db.json');
+let aiStats = { invoice: 0, booking: 0, ofd: 0, cancel: 0 };
+if (fs.existsSync(dbPath)) {
+    try {
+        aiStats = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    } catch (e) {
+        console.error("Error reading db.json", e);
+    }
+}
+function saveAiStats() {
+    fs.writeFileSync(dbPath, JSON.stringify(aiStats, null, 2));
+    io.emit('ai-stats-update', aiStats);
+}
+
+// --- Historical Event Tracking ---
+const historyPath = path.join(__dirname, 'history.json');
+let aiHistory = [];
+if (fs.existsSync(historyPath)) {
+    try {
+        aiHistory = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
+    } catch (e) { console.error("Error reading history.json", e); }
+}
+
+function logAiEvent(type) {
+    const event = { type, timestamp: new Date().toISOString() };
+    aiHistory.push(event);
+    fs.writeFileSync(historyPath, JSON.stringify(aiHistory, null, 2));
+}
+
 
 const app = express();
 const server = http.createServer(app);
@@ -81,7 +112,30 @@ function runScript(scriptPath, args, socket) {
   child.stdout.on("data", (data) => {
     const lines = data.toString().split("\n");
     lines.forEach((line) => {
-      if (line.trim()) socket.emit("log", line);
+      if (line.trim()) {
+          socket.emit("log", line);
+          
+          // --- AI Stats Tracking ---
+          if (line.includes("✅ Invoice Generated Successfully!")) {
+              aiStats.invoice++;
+              logAiEvent('invoice'); 
+              saveAiStats();
+          } else if (line.match(/✅ \[Order (.*?)\] Form Successfully Filled/)) {
+              const orderId = line.match(/✅ \[Order (.*?)\]/)[1];
+              aiStats.booking++;
+              logAiEvent('booking', orderId);
+              saveAiStats();
+          } else if (line.match(/✅ OFD DONE → Row (.*?)/)) {
+              const rowId = line.match(/Row (.*?)$/)[1];
+              aiStats.ofd++;
+              logAiEvent('ofd', `Row ${rowId}`);
+              saveAiStats();
+          } else if (line.includes("✅ Cancellation submitted!")) {
+              aiStats.cancel++;
+              logAiEvent('cancel');
+              saveAiStats();
+          }
+      }
     });
   });
 
@@ -112,6 +166,37 @@ io.on("connection", (socket) => {
   if (cachedStats) {
     socket.emit('stats-update', cachedStats);
   }
+  socket.emit('ai-stats-update', aiStats);
+
+  socket.on('request-ai-stats', () => {
+    socket.emit('ai-stats-update', aiStats);
+  });
+
+  socket.on('request-timeframe-stats', (timeframe) => {
+    const now = new Date();
+    let startDate = new Date(0); // All Time default
+
+    if (timeframe === 'today') {
+      startDate = new Date(now.setHours(0, 0, 0, 0));
+    } else if (timeframe === 'week') {
+      startDate = new Date(now.setDate(now.getDate() - 7));
+    } else if (timeframe === 'month') {
+      startDate = new Date(now.setMonth(now.getMonth() - 1));
+    }
+
+    const filtered = aiHistory.filter(event => new Date(event.timestamp) >= startDate);
+    
+    // Calculate totals for the filtered range
+    const stats = {
+      total: filtered.length,
+      invoice: filtered.filter(e => e.type === 'invoice').length,
+      booking: filtered.filter(e => e.type === 'booking').length,
+      ofd: filtered.filter(e => e.type === 'ofd').length,
+      cancel: filtered.filter(e => e.type === 'cancel').length
+    };
+
+    socket.emit('timeframe-stats-response', stats);
+  });
 
   socket.on("start-invoice", (data) => {
     const scriptPath = path.join(__dirname, "invoice-automation", "index.js");

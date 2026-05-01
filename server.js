@@ -173,6 +173,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on('request-timeframe-stats', (timeframe) => {
+    if (timeframe === 'all') {
+      const stats = {
+        total: (aiStats.invoice || 0) + (aiStats.booking || 0) + (aiStats.ofd || 0) + (aiStats.cancel || 0),
+        invoice: aiStats.invoice || 0,
+        booking: aiStats.booking || 0,
+        ofd: aiStats.ofd || 0,
+        cancel: aiStats.cancel || 0
+      };
+      socket.emit('timeframe-stats-response', stats);
+      return;
+    }
+
     const now = new Date();
     let startDate = new Date(0); // All Time default
 

@@ -1775,6 +1775,11 @@
                 aiChart.data.datasets[0].data = [stats.invoice, stats.booking, stats.ofd, stats.cancel];
                 aiChart.update();
             }
+
+            // Update Total Time Saved for this timeframe
+            const timeframeMins = (stats.invoice * 5) + (stats.booking * 5) + (stats.ofd * 3) + (stats.cancel * 3);
+            totalAiMinsGlobal = timeframeMins;
+            updateTotalTimeDisplay();
         });
 
         let currentTimeUnit = 'hrs';
@@ -1823,34 +1828,25 @@
             const ofdMins = (data.ofd || 0) * 3;
             const cancelMins = (data.cancel || 0) * 3;
 
-            totalAiMinsGlobal = invoiceMins + bookingMins + ofdMins + cancelMins;
-
-            const invHrs = invoiceMins / 60;
-            const bookHrs = bookingMins / 60;
-            const ofdHrs = ofdMins / 60;
-            const canHrs = cancelMins / 60;
-
             // Update Total Tasks number only if we are in 'all' view
             const tasksEl = document.getElementById('ai-total-tasks');
+            // Update UI based on timeframe
             if (currentTaskTimeframe === 'all') {
                 if (tasksEl) tasksEl.innerText = totalTasks;
-            } else {
-                // Re-fetch timeframe stats to ensure the filtered total is accurate after a live update
-                socket.emit('request-timeframe-stats', currentTaskTimeframe);
-            }
+                totalAiMinsGlobal = invoiceMins + bookingMins + ofdMins + cancelMins;
+                updateTotalTimeDisplay();
 
-            updateTotalTimeDisplay();
+                const invHrs = invoiceMins / 60;
+                const bookHrs = bookingMins / 60;
+                const ofdHrs = ofdMins / 60;
+                const canHrs = cancelMins / 60;
 
-            if (currentTaskTimeframe === 'all') {
                 const statInvEl = document.getElementById('ai-stat-invoice');
                 if (statInvEl) statInvEl.innerText = data.invoice || 0;
-
                 const statBookEl = document.getElementById('ai-stat-booking');
                 if (statBookEl) statBookEl.innerText = data.booking || 0;
-
                 const statOfdEl = document.getElementById('ai-stat-ofd');
                 if (statOfdEl) statOfdEl.innerText = data.ofd || 0;
-
                 const statCanEl = document.getElementById('ai-stat-cancel');
                 if (statCanEl) statCanEl.innerText = data.cancel || 0;
 
@@ -1859,24 +1855,10 @@
                 document.getElementById('ai-time-booking').innerText = bookHrs.toFixed(1) + " Hrs Saved";
                 document.getElementById('ai-time-ofd').innerText = ofdHrs.toFixed(1) + " Hrs Saved";
                 document.getElementById('ai-time-cancel').innerText = canHrs.toFixed(1) + " Hrs Saved";
-            }
 
-            if (currentTaskTimeframe === 'all') {
-                // Update Chart 1 (Counts)
-                const countData = [
-                    data.invoice || 0,
-                    data.booking || 0,
-                    data.ofd || 0,
-                    data.cancel || 0
-                ];
-                
-                // Update Chart 2 (Time)
-                const timeData = [
-                    parseFloat(invHrs.toFixed(1)),
-                    parseFloat(bookHrs.toFixed(1)),
-                    parseFloat(ofdHrs.toFixed(1)),
-                    parseFloat(canHrs.toFixed(1))
-                ];
+                // Update Charts
+                const countData = [data.invoice || 0, data.booking || 0, data.ofd || 0, data.cancel || 0];
+                const timeData = [invHrs, bookHrs, ofdHrs, canHrs];
 
                 if (currentAiFilter === 'all') {
                     aiChart.data.datasets[0].data = countData;
@@ -1886,9 +1868,11 @@
                     aiChart.data.datasets[0].data = countData.map((v, i) => i === index ? v : 0);
                     aiTimeChart.data.datasets[0].data = timeData.map((v, i) => i === index ? v : 0);
                 }
-                
                 aiChart.update();
                 aiTimeChart.update();
+            } else {
+                // Re-fetch timeframe stats to ensure the filtered display is accurate after a live update
+                socket.emit('request-timeframe-stats', currentTaskTimeframe);
             }
             
         });

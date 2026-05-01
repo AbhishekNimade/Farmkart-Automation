@@ -1775,6 +1775,15 @@
                 aiChart.data.datasets[0].data = [stats.invoice, stats.booking, stats.ofd, stats.cancel];
                 aiChart.update();
             }
+            if (aiTimeChart) {
+                aiTimeChart.data.datasets[0].data = [
+                    parseFloat(invHrs.toFixed(1)),
+                    parseFloat(bookHrs.toFixed(1)),
+                    parseFloat(ofdHrs.toFixed(1)),
+                    parseFloat(canHrs.toFixed(1))
+                ];
+                aiTimeChart.update();
+            }
 
             // Update Total Time Saved for this timeframe
             const timeframeMins = (stats.invoice * 5) + (stats.booking * 5) + (stats.ofd * 3) + (stats.cancel * 3);
@@ -1858,7 +1867,12 @@
 
                 // Update Charts
                 const countData = [data.invoice || 0, data.booking || 0, data.ofd || 0, data.cancel || 0];
-                const timeData = [invHrs, bookHrs, ofdHrs, canHrs];
+                const timeData = [
+                    parseFloat(invHrs.toFixed(1)),
+                    parseFloat(bookHrs.toFixed(1)),
+                    parseFloat(ofdHrs.toFixed(1)),
+                    parseFloat(canHrs.toFixed(1))
+                ];
 
                 if (currentAiFilter === 'all') {
                     aiChart.data.datasets[0].data = countData;

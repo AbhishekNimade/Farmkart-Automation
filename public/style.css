@@ -72,14 +72,14 @@ body::before {
   width: calc(100% - 40px);
   max-width: 1600px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.1); /* More transparent glass */
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50px; /* Fully rounded pill shape */
+  background: rgba(255, 255, 255, 0.2); /* Frosted glass look */
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px; /* Refined rounded rectangle like macOS Dock */
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    0 10px 40px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -120,7 +120,7 @@ body::before {
   background: linear-gradient(135deg, #72bf44 0%, #5da632 100%);
   color: white;
   padding: 10px 20px;
-  border-radius: 30px;
+  border-radius: 12px;
   font-size: 13px;
   font-weight: 700;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -150,13 +150,15 @@ body::before {
 .nav-items-container {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   padding: 5px;
   position: relative;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 .nav-item {
@@ -172,7 +174,7 @@ body::before {
   position: relative;
   z-index: 2;
   transition: color 0.3s;
-  border-radius: 35px;
+  border-radius: 12px;
 }
 
 .nav-item:hover,
@@ -180,24 +182,38 @@ body::before {
   color: var(--text-primary);
 }
 
-/* Bubble Animation - Enhanced Premium Glass Effect */
+/* Bubble Animation - Enhanced Liquid Glass Effect */
 .bubble-indicator {
   position: absolute;
   top: 5px;
-  left: 0; /* JS handles X position entirely via transform */
+  left: 0;
   height: calc(100% - 10px);
-  /* Use a subtle glass background instead of solid white */
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border-radius: 35px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border-radius: 12px;
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.05),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   z-index: 1;
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Smoother spring */
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Liquid border effect */
+  background-clip: padding-box;
+}
+
+.bubble-indicator::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(114, 191, 68, 0.6), rgba(59, 130, 246, 0.6));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .status-badge {
@@ -208,7 +224,7 @@ body::before {
   backdrop-filter: blur(10px);
   color: #166534;
   padding: 8px 14px;
-  border-radius: 25px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 700;
   margin-left: 10px;
@@ -350,16 +366,20 @@ body::before {
 }
 
 .stat-card {
-  background: var(--card-bg); /* Opaque background is better for reading than heavy blur */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   padding: 32px 24px;
-  border-radius: 20px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: var(--transition-smooth);
-  border: 1px solid rgba(15, 23, 42, 0.04);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -372,7 +392,8 @@ body::before {
   right: 0;
   height: 4px;
   background: var(--icon-color);
-  opacity: 1;
+  opacity: 0.8;
+  box-shadow: 0 0 15px var(--icon-color);
 }
 
 .stat-card:hover {
@@ -492,7 +513,7 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.4);
   color: var(--accent-color);
   text-decoration: none;
-  border-radius: 50px;
+  border-radius: 14px;
   font-weight: 700;
   font-size: 16px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -641,7 +662,7 @@ body.dark-mode .card {
   letter-spacing: 1px;
   background: rgba(74, 222, 128, 0.1);
   padding: 4px 12px;
-  border-radius: 50px;
+  border-radius: 10px;
   border: 1px solid rgba(74, 222, 128, 0.2);
 }
 
@@ -1836,7 +1857,7 @@ body.dark-mode {
   --text-primary: #f8fafc; /* Crisp readable light text */
   --text-secondary: #94a3b8; /* Soft readable sub-text */
   --brand-blue: #3b82f6; /* Bright blue for dark mode contrast */
-  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-bg: rgba(15, 23, 42, 0.6);
   --glass-border: rgba(255, 255, 255, 0.06); /* Very subtle glass border */
   
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -1855,7 +1876,7 @@ body.dark-mode::before {
     ),
     radial-gradient(
       circle at 80% 70%,
-      rgba(59, 130, 246, 0.15) 0%,
+      rgba(59, 130, 246, 0.06) 0%,
       transparent 50%
     );
 }
@@ -1876,7 +1897,8 @@ body.dark-mode .safety-section {
 }
 
 body.dark-mode .liquid-navbar {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.35); /* More transparent for better glass effect */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 body.dark-mode .nav-item {
@@ -2149,11 +2171,17 @@ body.dark-mode .nav-items-container {
 }
 
 body.dark-mode .bubble-indicator {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px) saturate(200%);
+  -webkit-backdrop-filter: blur(15px) saturate(200%);
   box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 1);
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(59, 130, 246, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .bubble-indicator::after {
+  background: linear-gradient(135deg, rgba(163, 230, 53, 0.6), rgba(96, 165, 250, 0.6));
 }
 
 body.dark-mode .nav-item {
@@ -2192,8 +2220,9 @@ body.dark-mode .stat-label {
 
 /* 4. Active Nav Item Visibility */
 body.dark-mode .nav-item.active {
-  color: #1e293b !important; /* Dark text on the light bubble */
+  color: #ffffff !important;
   font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* 5. Highlight Text in Dark Mode (Brighter Gradients) */
@@ -3262,7 +3291,7 @@ body.dark-mode .total-hours {
   margin-bottom: 20px;
 }
 .primary-card {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 24px;

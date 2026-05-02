@@ -1786,13 +1786,19 @@
             }
 
             // Update Total Time Saved for this timeframe
-            const timeframeMins = (stats.invoice * 5) + (stats.booking * 5) + (stats.ofd * 3) + (stats.cancel * 3);
-            totalAiMinsGlobal = timeframeMins;
+            currentAiCounts = {
+                invoice: stats.invoice || 0,
+                booking: stats.booking || 0,
+                ofd: stats.ofd || 0,
+                cancel: stats.cancel || 0
+            };
+            totalAiMinsGlobal = (currentAiCounts.invoice * 5) + (currentAiCounts.booking * 5) + (currentAiCounts.ofd * 3) + (currentAiCounts.cancel * 3);
             updateTotalTimeDisplay();
         });
 
         let currentTimeUnit = 'hrs';
         let totalAiMinsGlobal = 0;
+        let currentAiCounts = { invoice: 0, booking: 0, ofd: 0, cancel: 0 };
 
         function changeTimeUnit(unit, element) {
             currentTimeUnit = unit;
@@ -1812,18 +1818,79 @@
 
         function updateTotalTimeDisplay() {
             const hoursEl = document.getElementById('ai-total-hours');
+            const unitLabelEl = document.getElementById('current-time-unit');
+            // Select the subtext of the Total Time Saved card (the one with border-top-blue)
+            const subtextEl = document.querySelector('.primary-card.border-top-blue .primary-card-subtext');
+            
             if (!hoursEl) return;
 
-            let displayValue = 0;
+            let factor = 1;
+            let unitText = 'Min';
+            let subText = 'minutes';
+            let decimals = 0;
+
             if (currentTimeUnit === 'min') {
-                displayValue = totalAiMinsGlobal;
-                hoursEl.innerText = Math.floor(displayValue);
+                factor = 1;
+                unitText = 'Min';
+                subText = 'minutes';
+                decimals = 0;
             } else if (currentTimeUnit === 'hrs') {
-                displayValue = totalAiMinsGlobal / 60;
-                hoursEl.innerText = displayValue.toFixed(2);
+                factor = 60;
+                unitText = 'Hrs';
+                subText = 'hours';
+                decimals = 1;
             } else if (currentTimeUnit === 'days') {
-                displayValue = totalAiMinsGlobal / (60 * 24);
-                hoursEl.innerText = displayValue.toFixed(2);
+                factor = 60 * 24;
+                unitText = 'Days';
+                subText = 'days';
+                decimals = 2;
+            }
+
+            // Update main big number
+            const totalValue = totalAiMinsGlobal / factor;
+            if (totalValue === 0) {
+                hoursEl.innerText = "0";
+            } else if (totalValue % 1 === 0) {
+                hoursEl.innerText = totalValue.toFixed(0);
+            } else {
+                hoursEl.innerText = totalValue.toFixed(decimals);
+            }
+            
+            if (unitLabelEl) unitLabelEl.innerText = unitText;
+            if (subtextEl) subtextEl.innerText = `Manual ${subText} avoided`;
+
+            // Update sub-cards time subtexts
+            const weights = { invoice: 5, booking: 5, ofd: 3, cancel: 3 };
+            const ids = { invoice: 'ai-time-invoice', booking: 'ai-time-booking', ofd: 'ai-time-ofd', cancel: 'ai-time-cancel' };
+
+            Object.keys(weights).forEach(key => {
+                const mins = currentAiCounts[key] * weights[key];
+                const val = mins / factor;
+                const el = document.getElementById(ids[key]);
+                if (el) {
+                    let formattedVal;
+                    if (val === 0) formattedVal = "0";
+                    else if (val % 1 === 0) formattedVal = val.toFixed(0);
+                    else formattedVal = val.toFixed(1); // sub-cards look better with 1 decimal
+                    
+                    el.innerText = `${formattedVal} ${unitText} Saved`;
+                }
+            });
+
+            // Update Charts if they exist (keep charts in Hours for consistency as they are labeled as such)
+            if (aiTimeChart) {
+                const invHrs = (currentAiCounts.invoice * 5) / 60;
+                const bookHrs = (currentAiCounts.booking * 5) / 60;
+                const ofdHrs = (currentAiCounts.ofd * 3) / 60;
+                const canHrs = (currentAiCounts.cancel * 3) / 60;
+                
+                aiTimeChart.data.datasets[0].data = [
+                    parseFloat(invHrs.toFixed(1)),
+                    parseFloat(bookHrs.toFixed(1)),
+                    parseFloat(ofdHrs.toFixed(1)),
+                    parseFloat(canHrs.toFixed(1))
+                ];
+                aiTimeChart.update();
             }
         }
 
@@ -1842,48 +1909,28 @@
             // Update UI based on timeframe
             if (currentTaskTimeframe === 'all') {
                 if (tasksEl) tasksEl.innerText = totalTasks;
-                totalAiMinsGlobal = invoiceMins + bookingMins + ofdMins + cancelMins;
+                
+                currentAiCounts = {
+                    invoice: data.invoice || 0,
+                    booking: data.booking || 0,
+                    ofd: data.ofd || 0,
+                    cancel: data.cancel || 0
+                };
+                totalAiMinsGlobal = (currentAiCounts.invoice * 5) + (currentAiCounts.booking * 5) + (currentAiCounts.ofd * 3) + (currentAiCounts.cancel * 3);
+                
                 updateTotalTimeDisplay();
 
-                const invHrs = invoiceMins / 60;
-                const bookHrs = bookingMins / 60;
-                const ofdHrs = ofdMins / 60;
-                const canHrs = cancelMins / 60;
-
-                const statInvEl = document.getElementById('ai-stat-invoice');
-                if (statInvEl) statInvEl.innerText = data.invoice || 0;
-                const statBookEl = document.getElementById('ai-stat-booking');
-                if (statBookEl) statBookEl.innerText = data.booking || 0;
-                const statOfdEl = document.getElementById('ai-stat-ofd');
-                if (statOfdEl) statOfdEl.innerText = data.ofd || 0;
-                const statCanEl = document.getElementById('ai-stat-cancel');
-                if (statCanEl) statCanEl.innerText = data.cancel || 0;
-
-                // Update DOM Time Subtexts
-                document.getElementById('ai-time-invoice').innerText = invHrs.toFixed(1) + " Hrs Saved";
-                document.getElementById('ai-time-booking').innerText = bookHrs.toFixed(1) + " Hrs Saved";
-                document.getElementById('ai-time-ofd').innerText = ofdHrs.toFixed(1) + " Hrs Saved";
-                document.getElementById('ai-time-cancel').innerText = canHrs.toFixed(1) + " Hrs Saved";
-
-                // Update Charts
-                const countData = [data.invoice || 0, data.booking || 0, data.ofd || 0, data.cancel || 0];
-                const timeData = [
-                    parseFloat(invHrs.toFixed(1)),
-                    parseFloat(bookHrs.toFixed(1)),
-                    parseFloat(ofdHrs.toFixed(1)),
-                    parseFloat(canHrs.toFixed(1))
-                ];
-
-                if (currentAiFilter === 'all') {
-                    aiChart.data.datasets[0].data = countData;
-                    aiTimeChart.data.datasets[0].data = timeData;
-                } else {
-                    const index = ['invoice', 'booking', 'ofd', 'cancel'].indexOf(currentAiFilter);
-                    aiChart.data.datasets[0].data = countData.map((v, i) => i === index ? v : 0);
-                    aiTimeChart.data.datasets[0].data = timeData.map((v, i) => i === index ? v : 0);
+                // Update Charts counts
+                if (aiChart) {
+                    const countData = [data.invoice || 0, data.booking || 0, data.ofd || 0, data.cancel || 0];
+                    if (currentAiFilter === 'all') {
+                        aiChart.data.datasets[0].data = countData;
+                    } else {
+                        const index = ['invoice', 'booking', 'ofd', 'cancel'].indexOf(currentAiFilter);
+                        aiChart.data.datasets[0].data = countData.map((v, i) => i === index ? v : 0);
+                    }
+                    aiChart.update();
                 }
-                aiChart.update();
-                aiTimeChart.update();
             } else {
                 // Re-fetch timeframe stats to ensure the filtered display is accurate after a live update
                 socket.emit('request-timeframe-stats', currentTaskTimeframe);

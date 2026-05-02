@@ -10,5 +10,65 @@
   {
     "type": "invoice",
     "timestamp": "2026-05-01T04:28:26.391Z"
+  },
+  {
+    "type": "cancel",
+    "timestamp": "2026-05-01T06:21:07.930Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-01T07:53:32.798Z"
+  },
+  {
+    "type": "cancel",
+    "timestamp": "2026-05-01T10:05:45.475Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-01T10:14:13.776Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-02T03:34:57.872Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-02T03:36:32.526Z"
+  },
+  {
+    "type": "cancel",
+    "timestamp": "2026-05-02T04:19:21.868Z"
+  },
+  {
+    "type": "cancel",
+    "timestamp": "2026-05-02T04:19:58.278Z"
+  },
+  {
+    "type": "booking",
+    "timestamp": "2026-05-02T04:22:09.367Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-02T04:26:37.378Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-02T04:32:39.946Z"
+  },
+  {
+    "type": "invoice",
+    "timestamp": "2026-05-02T04:34:49.621Z"
+  },
+  {
+    "type": "booking",
+    "timestamp": "2026-05-02T06:14:57.284Z"
+  },
+  {
+    "type": "booking",
+    "timestamp": "2026-05-02T06:15:40.950Z"
+  },
+  {
+    "type": "booking",
+    "timestamp": "2026-05-02T06:16:23.377Z"
   }
 ]

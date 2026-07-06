@@ -66,8 +66,8 @@ export async function readPendingOrders(startRow) {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Read form Column B to U
-    const range = `'01 April 2024'!B${startRow}:Z`; // Expanded from U to Z to be safe
+    // Read form Column D to Z
+    const range = `'01 April 2026'!D${startRow}:Z`; // Expanded from U to Z to be safe
 
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
@@ -80,29 +80,29 @@ export async function readPendingOrders(startRow) {
     rows.forEach((row, index) => {
         const actualRowNumber = startRow + index;
 
-        // Indices relative to B (which is index 0 in this range)
-        const orderId = row[0];       // Col B
-        const awbStatus = row[1];     // Col C
+        // Indices relative to D (which is index 0 in this range)
+        const orderId = row[0];       // Col D
+        const awbStatus = row[1];     // Col E
 
         // Basic check: Order ID should be numeric/valid length
         if (orderId && orderId.length > 4) {
-            // ONLY process if AWB (Col C) is EMPTY
+            // ONLY process if AWB (Col E) is EMPTY
             if (!awbStatus || awbStatus.trim() === "") {
                 orders.push({
                     rowNumber: actualRowNumber,
                     orderId: orderId.toString().trim(),
                     // Capture other columns strictly as strings (or empty)
                     customerDetails: {
-                        name: row[8],      // J
-                        phone: row[9],     // K
-                        pincode: row[10],  // L
-                        addressPart: row[11], // M
-                        village: row[12],  // N
-                        tehsil: row[13],   // O
-                        district: row[14], // P
-                        state: row[15],    // Q (Assuming next available or based on pattern)
-                        boxSize: row[3],   // E
-                        codAmount: row[18], // T (COD Amount)
+                        name: row[8],      // L
+                        phone: row[9],     // M
+                        pincode: row[10],  // N
+                        addressPart: row[11], // O
+                        village: row[12],  // P
+                        tehsil: row[13],   // Q
+                        district: row[14], // R
+                        state: row[15],    // S (Assuming next available or based on pattern)
+                        boxSize: row[3],   // G
+                        codAmount: row[18], // V (COD Amount)
                     },
                     rawRow: row,
                 });
@@ -117,7 +117,7 @@ export async function readPendingOrders(startRow) {
 // Update AWB Number
 // -----------------------------
 /**
- * Updates AWB number in Column C
+ * Updates AWB number in Column E
  *
  * @param {number} rowNumber - Sheet row number
  * @param {string} awbNumber - Generated AWB
@@ -129,8 +129,8 @@ export async function updateAwb(rowNumber, awbNumber) {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Write to Column C
-    const range = `'01 April 2024'!C${rowNumber}`;
+    // Write to Column E
+    const range = `'01 April 2026'!E${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -143,7 +143,7 @@ export async function updateAwb(rowNumber, awbNumber) {
         });
     } catch (e) {
         if (e.message.includes("protected")) {
-            console.error(`   ⚠️ Sheet Error: Column C is protected. Could not write AWB: ${awbNumber}`);
+            console.error(`   ⚠️ Sheet Error: Column E is protected. Could not write AWB: ${awbNumber}`);
         } else {
             throw e;
         }
@@ -154,14 +154,14 @@ export async function updateAwb(rowNumber, awbNumber) {
 // Update Delivery Partner
 // -----------------------------
 /**
- * Updates Delivery Partner in Column D
+ * Updates Delivery Partner in Column F
  * 
  * @param {number} rowNumber 
  * @param {string} partner 
  */
 export async function updateDeliveryPartner(rowNumber, partner = "Delhivery") {
     const SHEET_ID = process.env.SHEET_ID;
-    const range = `'01 April 2024'!D${rowNumber}`;
+    const range = `'01 April 2026'!F${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -172,9 +172,9 @@ export async function updateDeliveryPartner(rowNumber, partner = "Delhivery") {
                 values: [[partner]],
             },
         });
-        console.log(`   📝 Updated Delivery Partner (Col D) for Row ${rowNumber}: ${partner}`);
+        console.log(`   📝 Updated Delivery Partner (Col F) for Row ${rowNumber}: ${partner}`);
     } catch (e) {
-        console.error(`   ⚠️ Sheet Error: Could not update partner in Col D: ${e.message}`);
+        console.error(`   ⚠️ Sheet Error: Could not update partner in Col F: ${e.message}`);
     }
 }
 
@@ -182,7 +182,7 @@ export async function updateDeliveryPartner(rowNumber, partner = "Delhivery") {
 // Update Booking Status
 // -----------------------------
 /**
- * Updates Booking Status in Column F
+ * Updates Booking Status in Column H
  *
  * @param {number} rowNumber - Sheet row number
  * @param {string} status - Status text (e.g. "Booked by AI")
@@ -194,8 +194,8 @@ export async function updateBookingStatus(rowNumber, status = "Booked by AI") {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Write to Column F
-    const range = `'01 April 2024'!F${rowNumber}`;
+    // Write to Column H
+    const range = `'01 April 2026'!H${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -208,20 +208,20 @@ export async function updateBookingStatus(rowNumber, status = "Booked by AI") {
         });
     } catch (e) {
         if (e.message.includes("protected")) {
-            console.error(`   ⚠️ Sheet Error: Column F is protected. Could not write status: ${status}`);
+            console.error(`   ⚠️ Sheet Error: Column H is protected. Could not write status: ${status}`);
         } else {
             throw e;
         }
     }
 
-    console.log(`   📝 Updated Booking Status (Col F) for Row ${rowNumber}: ${status}`);
+    console.log(`   📝 Updated Booking Status (Col H) for Row ${rowNumber}: ${status}`);
 }
 
 // -----------------------------
 // Update Delivery Charge
 // -----------------------------
 /**
- * Updates Delivery Charge in Column U (Index 21/U)
+ * Updates Delivery Charge in Column Y
  *
  * @param {number} rowNumber - Sheet row number
  * @param {number} amount - Rounded delivery charge
@@ -233,8 +233,8 @@ export async function updateDeliveryCharge(rowNumber, amount) {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Write to Column W (Shifted from U to W)
-    const range = `'01 April 2024'!W${rowNumber}`;
+    // Write to Column Y
+    const range = `'01 April 2026'!Y${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -247,20 +247,20 @@ export async function updateDeliveryCharge(rowNumber, amount) {
         });
     } catch (e) {
         if (e.message.indexOf("protected") !== -1) {
-            console.error(`   ⚠️ Sheet Error: Column W is protected. Could not write charge: ${amount}`);
+            console.error(`   ⚠️ Sheet Error: Column Y is protected. Could not write charge: ${amount}`);
         } else {
             throw e;
         }
     }
 
-    console.log(`   📝 Updated Delivery Charge (Col W) for Row ${rowNumber}: ₹${amount} [SUCCESS]`);
+    console.log(`   📝 Updated Delivery Charge (Col Y) for Row ${rowNumber}: ₹${amount} [SUCCESS]`);
 }
 
 // -----------------------------
 // Update Order Weight
 // -----------------------------
 /**
- * Updates Order Weight in Column T (Index 20/T)
+ * Updates Order Weight in Column X
  *
  * @param {number} rowNumber - Sheet row number
  * @param {number} weightKg - Weight in KG
@@ -272,8 +272,8 @@ export async function updateOrderWeight(rowNumber, weightKg) {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Write to Column V (Shifted from T to V)
-    const range = `'01 April 2024'!V${rowNumber}`;
+    // Write to Column X
+    const range = `'01 April 2026'!X${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -286,20 +286,20 @@ export async function updateOrderWeight(rowNumber, weightKg) {
         });
     } catch (e) {
         if (e.message.indexOf("protected") !== -1) {
-            console.error(`   ⚠️ Sheet Error: Column V is protected. Could not write weight: ${weightKg}`);
+            console.error(`   ⚠️ Sheet Error: Column X is protected. Could not write weight: ${weightKg}`);
         } else {
             throw e;
         }
     }
 
-    console.log(`   📝 Updated Order Weight (Col V) for Row ${rowNumber}: ${weightKg} kg`);
+    console.log(`   📝 Updated Order Weight (Col X) for Row ${rowNumber}: ${weightKg} kg`);
 }
 
 // -----------------------------
 // Update Booking Date
 // -----------------------------
 /**
- * Updates Booking Date in Column H
+ * Updates Booking Date in Column J
  *
  * @param {number} rowNumber - Sheet row number
  * @param {string} dateStr - Date string (e.g. "14 Jan 2026, 09:54 am")
@@ -311,8 +311,8 @@ export async function updateBookingDate(rowNumber, dateStr) {
         throw new Error("❌ SHEET_ID missing in .env");
     }
 
-    // Write to Column H
-    const range = `'01 April 2024'!H${rowNumber}`;
+    // Write to Column J
+    const range = `'01 April 2026'!J${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -323,10 +323,10 @@ export async function updateBookingDate(rowNumber, dateStr) {
                 values: [[dateStr]],
             },
         });
-        console.log(`   📝 Updated Booking Date (Col H) for Row ${rowNumber}: ${dateStr}`);
+        console.log(`   📝 Updated Booking Date (Col J) for Row ${rowNumber}: ${dateStr}`);
     } catch (e) {
         if (e.message.includes("protected")) {
-            console.error(`   ⚠️ Sheet Error: Column H is protected. Could not write booking date: ${dateStr}`);
+            console.error(`   ⚠️ Sheet Error: Column J is protected. Could not write booking date: ${dateStr}`);
         } else {
             throw e;
         }

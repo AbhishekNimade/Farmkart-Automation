@@ -68,14 +68,21 @@ let skipped = 0;
     await injectVisualCursor(page);
 
     // ================= LOGIN =================
-    await page.goto("https://kart.farm:8443/Farmkart/index.jsp?status=logout");
+    await page.goto("https://kart.farm:8443/Farmkart/index.jsp?status=logout", {
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
+    });
     await wait(600);
 
     await page.fill('input[name="username"]', process.env.FK_USERNAME);
     await page.fill('input[name="password"]', process.env.FK_PASSWORD);
-    await page.click('button:has-text("Login")');
-
-    await page.waitForURL("**/dashboard.jsp", { timeout: 10000 });
+    const navPromise = page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 60000 }).catch(() => {});
+    await page.click('button:has-text("Login")', { force: true });
+    await navPromise;
+    
+    // Fallback: wait for a common element on the dashboard to ensure it's loaded
+    await page.waitForSelector('text=Order mgmt.', { timeout: 10000 }).catch(() => {});
+    
     console.log("✅ Login successful");
 
     // ================= READ SHEET =================

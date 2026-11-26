@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const net = require("net");
 const { Server } = require("socket.io");
 const { spawn } = require("child_process");
 const path = require("path");
@@ -40,7 +41,18 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-const PORT = 3000;
+const getAvailablePort = (port) => {
+    return new Promise((resolve) => {
+        const srv = net.createServer();
+        srv.unref();
+        srv.on("error", () => {
+            resolve(getAvailablePort(port + 1));
+        });
+        srv.listen(port, () => {
+            srv.close(() => resolve(port));
+        });
+    });
+};
 
 // Middleware
 app.use(cors());
@@ -280,6 +292,10 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3005;
+
+getAvailablePort(DEFAULT_PORT).then((port) => {
+  server.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
 });

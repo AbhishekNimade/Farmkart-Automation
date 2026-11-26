@@ -15,7 +15,7 @@ const sheets = google.sheets({ version: "v4", auth });
 
 // ================= CONFIG =================
 const SPREADSHEET_ID = "1EyEZxOEnpPVbKhJx1fP1AkksVq6OXSGG4hfVOHjbuNs";
-const SHEET_NAME = "01 April 2026";
+const SHEET_NAME = "FY 26-27";
 
 // ================= READ ORDERS =================
 export async function getOrders() {

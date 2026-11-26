@@ -30,6 +30,7 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const sheets = google.sheets({ version: "v4", auth });
+const SHEET_NAME = "FY 26-27";
 
 // -----------------------------
 // Read Pending Orders
@@ -67,7 +68,7 @@ export async function readPendingOrders(startRow) {
     }
 
     // Read form Column D to Z
-    const range = `'01 April 2026'!D${startRow}:Z`; // Expanded from U to Z to be safe
+    const range = `'${SHEET_NAME}'!D${startRow}:Z`; // Expanded from U to Z to be safe
 
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId: SHEET_ID,
@@ -130,7 +131,7 @@ export async function updateAwb(rowNumber, awbNumber) {
     }
 
     // Write to Column E
-    const range = `'01 April 2026'!E${rowNumber}`;
+    const range = `'${SHEET_NAME}'!E${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -161,7 +162,7 @@ export async function updateAwb(rowNumber, awbNumber) {
  */
 export async function updateDeliveryPartner(rowNumber, partner = "Delhivery") {
     const SHEET_ID = process.env.SHEET_ID;
-    const range = `'01 April 2026'!F${rowNumber}`;
+    const range = `'${SHEET_NAME}'!F${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -195,7 +196,7 @@ export async function updateBookingStatus(rowNumber, status = "Booked by AI") {
     }
 
     // Write to Column H
-    const range = `'01 April 2026'!H${rowNumber}`;
+    const range = `'${SHEET_NAME}'!H${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -234,7 +235,7 @@ export async function updateDeliveryCharge(rowNumber, amount) {
     }
 
     // Write to Column Y
-    const range = `'01 April 2026'!Y${rowNumber}`;
+    const range = `'${SHEET_NAME}'!Y${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -273,7 +274,7 @@ export async function updateOrderWeight(rowNumber, weightKg) {
     }
 
     // Write to Column X
-    const range = `'01 April 2026'!X${rowNumber}`;
+    const range = `'${SHEET_NAME}'!X${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({
@@ -312,7 +313,7 @@ export async function updateBookingDate(rowNumber, dateStr) {
     }
 
     // Write to Column J
-    const range = `'01 April 2026'!J${rowNumber}`;
+    const range = `'${SHEET_NAME}'!J${rowNumber}`;
 
     try {
         await sheets.spreadsheets.values.update({

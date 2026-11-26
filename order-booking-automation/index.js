@@ -44,6 +44,7 @@ async function main() {
     const args = process.argv.slice(2);
     const startRowIdx = args.indexOf('--startRow');
     const isAuto = args.includes('--auto');
+    const isDryRun = args.includes('--dry-run');
 
     console.log("\n===========================================");
     console.log("🚀 ORDER BOOKING AUTOMATION STARTED");
@@ -71,7 +72,6 @@ async function main() {
     if (startRowIdx > -1) {
         startRowInput = args[startRowIdx + 1];
         console.log(`🤖 Auto-Start Mode: Row ${startRowInput}`);
-        rl.close();
     } else {
         startRowInput = await ask("👉 Please enter START ROW number (e.g., 4805): ");
     }
@@ -138,17 +138,22 @@ async function main() {
 
     console.log(`\n✅ Start Row: ${startRow} | Order Count: ${orderCount === 0 ? "ALL" : orderCount}`);
 
-    rl.close();
-
-    console.log(`\n✅ Start Row: ${startRow} | Order Count: ${orderCount === 0 ? "ALL" : orderCount}`);
-    console.log(`📌 Processing ${orders.length} orders...`);
+    // console.log(`\n✅ Start Row: ${startRow} | Order Count: ${orderCount === 0 ? "ALL" : orderCount}`);
+    // console.log(`📌 Processing ${orders.length} orders...`);
 
     // -----------------------------
     // LAUNCH BROWSER & TABS
     // -----------------------------
     console.log("\n🌐 Launching Browser...");
     const browser = await chromium.launch({ headless: false });
-    const context = await browser.newContext();
+    const context = await browser.newContext({
+        ignoreHTTPSErrors: true,
+        viewport: { width: 1280, height: 720 }
+    });
+
+    // Set global timeouts
+    context.setDefaultNavigationTimeout(60000);
+    context.setDefaultTimeout(30000);
 
     // Create 2 Separate Tabs
     console.log("   - Opening Tab 1: Farmkart");
@@ -164,15 +169,25 @@ async function main() {
     // -----------------------------
     console.log("\n🔐 STARTING LOGIN PHASE...");
 
-    // Login Farmkart (Tab 1)
-    await pageFarmkart.bringToFront();
-    await loginFarmkart(pageFarmkart);
+    try {
+        // Login Farmkart (Tab 1)
+        await pageFarmkart.bringToFront();
+        await loginFarmkart(pageFarmkart);
+        console.log("✅ Farmkart Login Phase Complete.");
 
-    // Login Delhivery (Tab 2)
-    await pageDelhivery.bringToFront();
-    await loginDelhivery(pageDelhivery);
+        // Login Delhivery (Tab 2)
+        await pageDelhivery.bringToFront();
+        await loginDelhivery(pageDelhivery);
+        console.log("✅ Delhivery Login Phase Complete.");
 
-    console.log("\n✅ ALL LOGINS SUCCESSFUL. STARTING ORDER LOOP...");
+        console.log("\n✅ ALL LOGINS SUCCESSFUL. STARTING ORDER LOOP...");
+        if (isDryRun) console.log("🧪 DRY RUN MODE ENABLED: No orders will be booked.");
+    } catch (loginError) {
+        console.error("\n❌ FATAL LOGIN ERROR:", loginError.message);
+        console.log("⏸️  Keeping browser open for 60 seconds for inspection...");
+        await wait(60000);
+        throw loginError;
+    }
 
     // -----------------------------
     // 2. PROCESSING LOOP
@@ -185,7 +200,10 @@ async function main() {
 
         // OPTIONAL: Skip if Box Size is missing (User Requirement)
         if (!order.customerDetails.boxSize || order.customerDetails.boxSize.trim() === "") {
-            console.log("⚠️ SKIPPING ORDER: 'Box Size' is missing in Google Sheet (Col G).");
+            const reason = "'Box Size' is missing in Google Sheet (Col G)";
+            console.log(`⚠️ SKIPPING ORDER: ${reason}`);
+            order.success = false;
+            order.skipReason = reason;
             continue;
         }
 
@@ -256,6 +274,11 @@ async function main() {
 
             // B. CREATE DELHIVERY ORDER (Tab 2)
             await pageDelhivery.bringToFront();
+            if (isDryRun) {
+                console.log(`🧪 [Dry Run] Skipping Delhivery order creation for ${order.orderId}`);
+                await wait(2000);
+                continue; 
+            }
             console.log(`\n🚚 [Delhivery] Switching tab to create order...`);
             const orderResult = await createOrder(pageDelhivery, orderData);
 
@@ -340,18 +363,20 @@ async function main() {
 
     console.log("\n🛑 Process Completed / Stopped.");
 
-    // Resume stdin for final wait
+    // Final Summary
+    const skippedOrders = orders.filter(o => !o.success && o.skipReason);
+    if (skippedOrders.length > 0) {
+        console.log(`\n⚠️  Summary: ${skippedOrders.length} orders were skipped:`);
+        skippedOrders.forEach(o => console.log(`   - Order ${o.orderId}: ${o.skipReason}`));
+    }
 
     if (isAuto) {
-        console.log("🏁 Auto-Exit: Closing browser.");
+        console.log("🏁 Auto-Exit: Closing browser in 5 seconds.");
+        await wait(5000);
     } else {
-        const rlFinal = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
-
-        await new Promise(resolve => rlFinal.question("👉 Press ENTER to close browser and exit...", resolve));
-        rlFinal.close();
+        // Use the existing 'rl' instead of creating a new one
+        await new Promise(resolve => rl.question("\n👉 Press ENTER to close browser and exit...", resolve));
+        rl.close();
     }
 
     await browser.close();

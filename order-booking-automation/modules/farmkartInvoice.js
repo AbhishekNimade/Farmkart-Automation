@@ -25,7 +25,10 @@ const FARMKART_INVOICE_URL =
 export async function loginFarmkart(page) {
     console.log("🔐 Logging into Farmkart...");
 
-    await page.goto(FARMKART_LOGIN_URL, { waitUntil: "domcontentloaded" });
+    await page.goto(FARMKART_LOGIN_URL, { 
+        waitUntil: "domcontentloaded",
+        timeout: 60000 
+    });
 
     // Check if already logged in or needs login
     if (page.url().includes("dashboard")) {
@@ -62,7 +65,10 @@ export async function openInvoice(page, orderId) {
     const invoiceUrl = `${FARMKART_INVOICE_URL}${orderId}`;
     if (!page.url().includes(invoiceUrl)) {
         console.log(`📄 Opening invoice for Order ID: ${orderId}`);
-        await page.goto(invoiceUrl, { waitUntil: "domcontentloaded" });
+        await page.goto(invoiceUrl, { 
+            waitUntil: "domcontentloaded",
+            timeout: 60000 
+        });
     }
 }
 

@@ -1,23 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Start script - Starts the server and opens the browser automatically
+ * Start script - Starts the server on a unique port and opens the browser automatically
  * Usage: node start.js
  */
 
 const { spawn, exec } = require('child_process');
 const path = require('path');
 const http = require('http');
+const net = require('net');
 
-const PORT = 3000;
-const URL = `http://localhost:${PORT}`;
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3005;
 
-console.log('🚀 Starting Merge Project...\n');
-
-// Function to check if server is already running
-function checkServerRunning() {
+// Function to check if server is already running on a specific port
+function checkServerRunning(port) {
     return new Promise((resolve) => {
-        const req = http.get(URL, (res) => {
+        const req = http.get(`http://localhost:${port}`, (res) => {
             resolve(true); // Server is running
         });
 
@@ -32,17 +30,31 @@ function checkServerRunning() {
     });
 }
 
+// Function to find next available port
+function getAvailablePort(port) {
+    return new Promise((resolve) => {
+        const srv = net.createServer();
+        srv.unref();
+        srv.on('error', () => {
+            resolve(getAvailablePort(port + 1));
+        });
+        srv.listen(port, () => {
+            srv.close(() => resolve(port));
+        });
+    });
+}
+
 // Function to open browser
-function openBrowser() {
-    console.log(`🌐 Opening browser at ${URL}...\n`);
+function openBrowser(url) {
+    console.log(`🌐 Opening browser at ${url}...\n`);
 
     const command = process.platform === 'darwin' ? 'open' :
         process.platform === 'win32' ? 'start' : 'xdg-open';
 
-    exec(`${command} ${URL}`, (err) => {
+    exec(`${command} ${url}`, (err) => {
         if (err) {
             console.error('⚠️  Could not open browser automatically.');
-            console.log(`Please open ${URL} manually in your browser.`);
+            console.log(`Please open ${url} manually in your browser.`);
         } else {
             console.log('✅ Browser opened successfully!\n');
         }
@@ -51,22 +63,26 @@ function openBrowser() {
 
 // Main logic
 (async () => {
-    const isRunning = await checkServerRunning();
+    console.log('🚀 Starting Merge Project...\n');
+
+    const isRunning = await checkServerRunning(DEFAULT_PORT);
 
     if (isRunning) {
-        console.log('✅ Server is already running on port 3000!\n');
-        openBrowser();
+        console.log(`✅ Server is already running on port ${DEFAULT_PORT}!\n`);
+        openBrowser(`http://localhost:${DEFAULT_PORT}`);
         console.log('💡 Tip: Server is running in another terminal. Use Ctrl+C there to stop it.\n');
         process.exit(0);
     } else {
-        console.log('🔄 Starting new server...\n');
+        const port = await getAvailablePort(DEFAULT_PORT);
+        const url = `http://localhost:${port}`;
+        console.log(`🔄 Starting new server on unique port ${port}...\n`);
 
         // Start the server
         const serverPath = path.join(__dirname, 'server.js');
         const server = spawn('node', [serverPath], {
             cwd: __dirname,
             stdio: 'inherit',
-            env: { ...process.env }
+            env: { ...process.env, PORT: port }
         });
 
         server.on('error', (err) => {
@@ -76,7 +92,7 @@ function openBrowser() {
 
         // Wait for server to start, then open browser
         setTimeout(() => {
-            openBrowser();
+            openBrowser(url);
         }, 2000);
 
         // Handle graceful shutdown

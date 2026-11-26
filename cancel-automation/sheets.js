@@ -93,17 +93,26 @@ export async function getNextEmptyRow() {
  */
 export async function updateCancelStatus(rowNo, orderDate, orderId = null, returnFrom = 'Other State') {
     try {
+        // Format cancel date (e.g., "11-Jul-2026")
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const d = new Date();
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        const cancelDate = `${day}-${month}-${year}`;
+
         console.log(`\n📡 Writing to Google Sheet, Row ${rowNo}...`);
         console.log(`   B${rowNo} = "${orderDate}"`);
         if (orderId) console.log(`   C${rowNo} = "${orderId}"`);
         console.log(`   F${rowNo} = "Cancelled"`);
         console.log(`   G${rowNo} = "${returnFrom}"`);
+        console.log(`   N${rowNo} = "${cancelDate}"`);
 
-        const updates = [];
+        const mainUpdates = [];
 
         // Col B — Order Date
         if (orderDate) {
-            updates.push({
+            mainUpdates.push({
                 range: `${SHEET_NAME}!B${rowNo}`,
                 values: [[orderDate]],
             });
@@ -111,38 +120,53 @@ export async function updateCancelStatus(rowNo, orderDate, orderId = null, retur
 
         // Col C — Order ID (only for direct order ID mode)
         if (orderId) {
-            updates.push({
+            mainUpdates.push({
                 range: `${SHEET_NAME}!C${rowNo}`,
                 values: [[orderId]],
             });
         }
 
         // Col F — Cancelled
-        updates.push({
+        mainUpdates.push({
             range: `${SHEET_NAME}!F${rowNo}`,
             values: [['Cancelled']],
         });
 
         // Col G — Return From
-        updates.push({
+        mainUpdates.push({
             range: `${SHEET_NAME}!G${rowNo}`,
             values: [[returnFrom]],
         });
 
-        if (updates.length === 0) {
-            console.log('⚠️ Nothing to write — all values empty.');
-            return;
+        if (mainUpdates.length > 0) {
+            await sheets.spreadsheets.values.batchUpdate({
+                spreadsheetId: SPREADSHEET_ID,
+                requestBody: {
+                    valueInputOption: 'USER_ENTERED',
+                    data: mainUpdates,
+                },
+            });
+            console.log(`✅ Sheet Row ${rowNo} main columns (B, C, F, G) updated successfully!`);
         }
 
-        await sheets.spreadsheets.values.batchUpdate({
-            spreadsheetId: SPREADSHEET_ID,
-            requestBody: {
+        // Try updating Column M (Cancel Date) separately since it might be protected
+        try {
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: SPREADSHEET_ID,
+                range: `${SHEET_NAME}!N${rowNo}`,
                 valueInputOption: 'USER_ENTERED',
-                data: updates,
-            },
-        });
+                requestBody: {
+                    values: [[cancelDate]],
+                },
+            });
+            console.log(`✅ Sheet Row ${rowNo} Column N (Cancel Date) updated successfully!`);
+        } catch (mError) {
+            console.error(`\n⚠️ Warning: Failed to update Column N (Order Cancel Date) for Row ${rowNo}.`);
+            console.error(`   Reason: Column N is likely protected in the Google Sheet.`);
+            console.error(`   To fix: Please unprotect Column N or grant editing permission to the service account:`);
+            console.error(`   👉 order-booking-automation-sa@order-booking-automation.iam.gserviceaccount.com\n`);
+        }
 
-        console.log(`✅ Sheet Row ${rowNo} updated successfully!`);
     } catch (error) {
         console.error(`❌ Sheet update FAILED for Row ${rowNo}:`, error.message);
         // Re-throw so caller knows update failed

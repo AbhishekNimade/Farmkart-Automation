@@ -294,20 +294,128 @@ async function extractOrderDate(page) {
             }
 
             // ── 5. Select Cancel Reason ──
-            console.log("\n📋 Selecting cancel reason...");
+            const targetReason = "Order returned by delivery partner (Delivery One / India Post)";
+            console.log(`\n📋 Selecting cancel reason: "${targetReason}"...`);
+            let reasonSelected = false;
+
             try {
-                // Force the value via JS (handles Select2 widget too)
-                await page.evaluate(() => {
-                    const sel = document.getElementById('cancelreason');
-                    if (sel) {
-                        sel.value = 'Wrong order placed';
-                        sel.dispatchEvent(new Event('change', { bubbles: true }));
+                // Method A: DOM evaluation (matches exact text, partial text, value, or last option, and handles Select2 & jQuery events)
+                const evalResult = await page.evaluate((reasonText) => {
+                    const sel = document.getElementById('cancelreason') ||
+                                document.querySelector('select[name*="reason" i]') ||
+                                document.querySelector('select[id*="cancel" i]');
+                    if (!sel) return { success: false, reason: "Element not found" };
+
+                    const options = Array.from(sel.options || []);
+                    if (options.length === 0) return { success: false, reason: "No options found" };
+
+                    // 1. Exact match (case-insensitive & trimmed)
+                    let match = options.find(opt => 
+                        opt.text.trim().toLowerCase() === reasonText.trim().toLowerCase() ||
+                        opt.value.trim().toLowerCase() === reasonText.trim().toLowerCase()
+                    );
+
+                    // 2. Partial match for "Order returned by delivery partner"
+                    if (!match) {
+                        match = options.find(opt => 
+                            opt.text.toLowerCase().includes('order returned by delivery partner') ||
+                            opt.value.toLowerCase().includes('order returned by delivery partner')
+                        );
                     }
-                });
-                console.log("✅ Cancel reason: 'Wrong order placed'");
+
+                    // 3. Match Delivery One / India Post
+                    if (!match) {
+                        match = options.find(opt => 
+                            (opt.text.toLowerCase().includes('delivery one') && opt.text.toLowerCase().includes('india post')) ||
+                            opt.text.toLowerCase().includes('delivery one') ||
+                            opt.text.toLowerCase().includes('india post')
+                        );
+                    }
+
+                    // 4. Fallback: Last option in the dropdown (as it is the last item in the list)
+                    if (!match && options.length > 1) {
+                        match = options[options.length - 1];
+                    }
+
+                    if (match) {
+                        sel.value = match.value;
+                        match.selected = true;
+                        sel.dispatchEvent(new Event('input', { bubbles: true }));
+                        sel.dispatchEvent(new Event('change', { bubbles: true }));
+
+                        // If jQuery / Select2 is used on the page
+                        if (window.$ && typeof window.$.fn === 'object') {
+                            try {
+                                window.$(sel).val(match.value).trigger('change');
+                            } catch (e) {}
+                        }
+                        return { success: true, matchedText: match.text, matchedValue: match.value };
+                    }
+
+                    return { success: false, reason: "No matching option found" };
+                }, targetReason);
+
+                if (evalResult && evalResult.success) {
+                    console.log(`✅ Cancel reason selected: "${evalResult.matchedText || evalResult.matchedValue}"`);
+                    reasonSelected = true;
+                } else {
+                    console.log(`⚠️ DOM select attempt: ${evalResult?.reason || 'failed'}`);
+                }
             } catch (e) {
-                console.log(`⚠️ Could not set cancel reason: ${e.message}`);
+                console.log(`⚠️ DOM select error: ${e.message}`);
             }
+
+            // Method B: Playwright selectOption fallback
+            if (!reasonSelected) {
+                try {
+                    const selLoc = page.locator('#cancelreason, select[name*="reason" i]').first();
+                    if (await selLoc.count() > 0) {
+                        await selLoc.selectOption({ label: targetReason }).catch(async () => {
+                            await selLoc.selectOption({ value: targetReason }).catch(async () => {
+                                const allOpts = await selLoc.locator('option').allInnerTexts();
+                                const lastIdx = allOpts.length - 1;
+                                if (lastIdx > 0) {
+                                    await selLoc.selectOption({ index: lastIdx });
+                                }
+                            });
+                        });
+                        console.log(`✅ Cancel reason selected via Playwright selectOption fallback.`);
+                        reasonSelected = true;
+                    }
+                } catch (e) {
+                    console.log(`⚠️ Playwright selectOption error: ${e.message}`);
+                }
+            }
+
+            // Method C: If Select2 dropdown UI is rendered/open or visible
+            try {
+                const select2Choice = page.locator('#select2-cancelreason-container, .select2-selection, .select2-container').first();
+                if (await select2Choice.count() > 0 && await select2Choice.isVisible()) {
+                    const curText = await select2Choice.innerText().catch(() => '');
+                    if (!curText.includes('Order returned by delivery partner')) {
+                        await select2Choice.click().catch(() => null);
+                        await wait(300);
+                        const optLoc = page.locator('.select2-results__option:has-text("Order returned by delivery partner"), .select2-results__option:has-text("Delivery One")').first();
+                        if (await optLoc.count() > 0) {
+                            await optLoc.scrollIntoViewIfNeeded().catch(() => null);
+                            await optLoc.click().catch(() => null);
+                            console.log(`✅ Clicked Select2 dropdown option.`);
+                        } else {
+                            const allResults = page.locator('.select2-results__option');
+                            const resCount = await allResults.count();
+                            if (resCount > 0) {
+                                const lastOption = allResults.nth(resCount - 1);
+                                await lastOption.scrollIntoViewIfNeeded().catch(() => null);
+                                await lastOption.click().catch(() => null);
+                                console.log(`✅ Clicked last Select2 option.`);
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                // Non-fatal if Select2 UI interaction is not required
+            }
+
             await wait(500);
 
             // ── 6. Click Cancel Order submit ──

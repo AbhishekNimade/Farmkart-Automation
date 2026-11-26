@@ -419,10 +419,24 @@ export async function createOrder(page, orderData) {
             // [STEP 7/9] CREATE ORDER
             console.log("\n[STEP 7/9] Clicking 'Create Order'...");
             try {
-                const createBtn = page.locator('button.ap-button.blue.filled').filter({ hasText: /Create Order/i }).last();
-                await createBtn.scrollIntoViewIfNeeded();
-                await createBtn.click();
-                console.log("   ✅ 'Create Order' clicked.");
+                // Use page.evaluate to execute a native DOM click. 
+                // This guarantees the click goes to the button itself, not to the SmartAssist widget overlapping it.
+                await page.evaluate(() => {
+                    const buttons = Array.from(document.querySelectorAll('button'));
+                    // Match button text containing "Create Order" but NOT "Manifest Later"
+                    const createBtn = buttons.find(b => {
+                        const text = (b.innerText || "").trim().toLowerCase();
+                        return text.includes("create order") && !text.includes("manifest");
+                    });
+                    
+                    if (createBtn) {
+                        createBtn.scrollIntoView({ block: 'center' });
+                        createBtn.click();
+                    } else {
+                        throw new Error("Create Order button not found in DOM");
+                    }
+                });
+                console.log("   ✅ 'Create Order' clicked via DOM evaluation.");
             } catch (e) {
                 throw new StepError("Step 7 (Create Order)", e.message);
             }

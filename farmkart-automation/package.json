@@ -5,6 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
+    "debug": "node test_login_debug.js",
+    "stats": "node stats.js",
+    "all": "node index.js & node stats.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
